@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  the-united-data-api
+  Serverless Scouting Network - Custom Private API for $0 Harvesters
+
+Globals:
+  Function:
+    Timeout: 30 
+    MemorySize: 256
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        DATABASE_URL: ""
+        DRY_RUN: "True" 
+
+Resources:
+  # ---------------------------------------------------------
+  # SCOUT 1: THE ESPN MATCHDAY HARVESTER
+  # ---------------------------------------------------------
+  EspnHarvesterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/src/espn_harvester/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /harvester/espn
+            Method: GET
+
+Outputs:
+  EspnHarvesterApi:
+    Description: "API Gateway endpoint URL for Prod environment for ESPN Harvester"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/harvester/espn"

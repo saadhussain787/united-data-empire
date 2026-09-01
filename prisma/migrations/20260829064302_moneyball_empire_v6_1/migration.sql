@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "MatchStat" ADD COLUMN     "npXG" DOUBLE PRECISION,
+ADD COLUMN     "xGBuildup" DOUBLE PRECISION;
