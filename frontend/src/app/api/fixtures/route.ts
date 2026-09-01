@@ -20,12 +20,12 @@ export async function GET() {
       count: matches.length,
       data: matches,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ [API] Error fetching fixtures from database:', error);
     return NextResponse.json(
       {
         status: 'ERROR',
-        message: error.message || 'Failed to retrieve match data from vault',
+        message: error instanceof Error ? error.message : 'Failed to retrieve match data from vault',
       },
       { status: 500 }
     );

@@ -6,8 +6,8 @@ import { Bebas_Neue } from 'next/font/google';
 
 const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'] });
 
-export default function FeaturedPlayerCard({ player }: { player: any }) {
-  const metadata = (player.metadata as any) || {};
+export default function FeaturedPlayerCard({ player }: { player: { id?: number; espnId?: string; name: string; position?: string; metadata?: Record<string, unknown> } }) {
+  const metadata = player.metadata || {};
   const jersey = metadata.jersey || '-';
   const positionName = metadata.position || player.position || 'Player';
   

@@ -51,7 +51,6 @@ const StatBar = ({
   const absAway = Math.abs(numAway) || 0;
   const total = absHome + absAway || 1;
   const homePct = (absHome / total) * 100;
-  const awayPct = (absAway / total) * 100;
 
   return (
     <div className="space-y-1.5">
@@ -260,14 +259,14 @@ export default function FixturesPage() {
                                   <div className="text-right pr-4">
                                     {match.homeGoalscorers?.map((g, i) => (
                                       <div key={i} className="text-xs text-gray-400 py-0.5">
-                                        <span className="text-white font-medium">{g.player}</span> <span className="text-[#D4AF37] ml-1">{g.minute}'</span>
+                                        <span className="text-white font-medium">{g.player}</span> <span className="text-[#D4AF37] ml-1">{g.minute}&apos;</span>
                                       </div>
                                     ))}
                                   </div>
                                   <div className="text-left pl-4 border-l border-white/5">
                                     {match.awayGoalscorers?.map((g, i) => (
                                       <div key={i} className="text-xs text-gray-400 py-0.5">
-                                        <span className="text-[#D4AF37] mr-1">{g.minute}'</span> <span className="text-white font-medium">{g.player}</span>
+                                        <span className="text-[#D4AF37] mr-1">{g.minute}&apos;</span> <span className="text-white font-medium">{g.player}</span>
                                       </div>
                                     ))}
                                   </div>

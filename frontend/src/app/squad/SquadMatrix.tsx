@@ -15,7 +15,7 @@ type Player = {
     jersey?: string;
     position?: string;
     age?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 };
 
