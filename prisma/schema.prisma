@@ -21,7 +21,7 @@ datasource db {
 // ----------------------------------------------------
 model Player {
   id             Int         @id @default(autoincrement())
-  apiId          Int         @unique
+  espnId         String      @unique
   name           String
   firstname      String?
   lastname       String?
@@ -33,6 +33,9 @@ model Player {
   number         Int?
   position       String?     
   photo          String?
+
+  squadRole      String      @default("SENIOR")
+  metadata       Json        @default("{}")
   
   preferredFoot  String?     
   contractEnd    DateTime?   

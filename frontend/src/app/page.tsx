@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Bebas_Neue, Inter } from 'next/font/google';
 import prisma from '@/lib/prisma';
 import { Match } from '@prisma/client';
+import FeaturedPlayerCard from './FeaturedPlayerCard';
 
 const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'] });
 const inter = Inter({ subsets: ['latin'] });
@@ -217,33 +218,7 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {featuredPlayers.map((player) => (
-              <Link
-                key={player.id}
-                href={`/players/${player.id}`}
-                className="bg-[#151A22] border border-[#2A313C] hover:border-[#DA291C] rounded-lg p-4 flex flex-col items-center text-center transition-all duration-200 group shadow-md"
-              >
-                <div className="w-20 h-20 relative mb-3 bg-[#0B0E14] rounded-full overflow-hidden border border-[#2A313C] group-hover:border-[#7A0006]">
-                  {player.photo ? (
-                    <Image
-                      src={player.photo}
-                      alt={player.name}
-                      fill
-                      sizes="80px"
-                      className="object-contain p-1"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-500 font-bold">
-                      #{player.number}
-                    </div>
-                  )}
-                </div>
-                <span className={`${bebas.className} text-sm text-[#DA291C]`}>#{player.number ?? '-'}</span>
-                <span className="font-bold text-xs text-white group-hover:text-[#D4AF37] truncate w-full">
-                  {player.name}
-                </span>
-                <span className="text-[10px] text-gray-500 uppercase mt-0.5">{player.position}</span>
-              </Link>
+              <FeaturedPlayerCard key={player.id} player={player} />
             ))}
           </div>
         </section>
