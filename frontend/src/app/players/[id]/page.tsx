@@ -1,269 +1,301 @@
-// FILE: frontend/src/app/players/[id]/page.tsx
-// Server Component: High-Density Player Dossier & Match-by-Match Performance Log
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Bebas_Neue } from 'next/font/google';
-import prisma from '@/lib/prisma';
-import { LegendCard, PlayerData } from '@/components/PlayerCard';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
-const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'] });
+// Types
+type Player = {
+  id: string;
+  name: string;
+  espnId?: string;
+  nationality?: string;
+  preferredFoot?: string;
+  metadata?: any;
+};
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+const TABS = [
+  { id: "overview", label: "OVERVIEW & BIO" },
+  { id: "shot_map", label: "2D CAREER SHOT MAP" },
+  { id: "radar", label: "EUROPEAN RADAR" },
+  { id: "playmaking", label: "PLAYMAKING & BUILDUP" },
+  { id: "ledger", label: "CAREER LEDGER" },
+];
 
-interface PlayerPageProps {
-  params: {
-    id: string;
-  };
-}
+export default function PlayerDossier() {
+  const params = useParams();
+  const id = params?.id as string;
+  
+  const [player, setPlayer] = useState<Player | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("overview");
 
-export default async function PlayerDossierPage({ params }: PlayerPageProps) {
-  const playerId = parseInt(params.id, 10);
+  useEffect(() => {
+    async function fetchPlayer() {
+      try {
+        const res = await fetch(`/api/players/${id}`);
+        const data = await res.json();
+        if (data.status === "SUCCESS") {
+          setPlayer(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch player", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (id) {
+      fetchPlayer();
+    }
+  }, [id]);
 
-  if (isNaN(playerId)) {
-    notFound();
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0B0E14] text-white flex items-center justify-center font-sans">
+        <div className="text-[#D4AF37] animate-pulse uppercase font-bold tracking-widest">
+          Initializing Dossier...
+        </div>
+      </div>
+    );
   }
-
-  const player = await prisma.player.findUnique({
-    where: { id: playerId },
-    include: {
-      matchStats: {
-        include: {
-          match: true,
-        },
-        orderBy: {
-          match: {
-            date: 'desc',
-          },
-        },
-      },
-    },
-  });
 
   if (!player) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-[#0B0E14] text-white flex items-center justify-center font-sans">
+        <div className="text-[#DA291C] uppercase font-bold tracking-widest">
+          Player Data Not Found
+        </div>
+      </div>
+    );
   }
 
-  // Calculate Aggregated Metrics from MatchStats with explicit types (zero ESLint warnings)
-  const totalApps = player.matchStats.length;
-  const totalMinutes = player.matchStats.reduce((sum: number, s) => sum + s.minutes, 0);
-  const totalGoals = player.matchStats.reduce((sum: number, s) => sum + s.goals, 0);
-  const totalAssists = player.matchStats.reduce((sum: number, s) => sum + s.assists, 0);
-  const totalYC = player.matchStats.reduce((sum: number, s) => sum + s.yellowCards, 0);
-  const totalRC = player.matchStats.reduce((sum: number, s) => sum + s.redCards, 0);
-  const totalXG = player.matchStats.reduce((sum: number, s) => sum + (s.xG || 0), 0);
-  const isLegend = !player.photo;
+  // Derived data
+  const initials = player.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
 
-  // Adapt data for LegendCard fallback
-  const playerCardData: PlayerData = {
-    id: player.id,
-    name: player.name,
-    position: player.position || 'Player',
-    nationality: player.nationality || 'Manchester United',
-    headshotUrl: player.photo,
-    squadNumber: player.number ?? undefined,
-    appearances: totalApps,
-    goals: totalGoals,
-    isLegend: isLegend,
-    era: isLegend ? 'Historical Legend' : '2024/25 Season',
-  };
+  const jersey = player.metadata?.jersey || "00";
+  const position = player.metadata?.position || "Unknown";
+  const height = player.metadata?.height || "N/A";
+  const weight = player.metadata?.weight || "N/A";
+
+  const seasonStats = player.metadata?.seasonStats || {};
+  const games = seasonStats.games || seasonStats.apps || 0;
+  const time = seasonStats.time || seasonStats.minutes || 0;
+  const goals = seasonStats.goals || 0;
+  const assists = seasonStats.assists || 0;
+  const xG = seasonStats.xG || 0;
+  const xA = seasonStats.xA || 0;
+  const finishingVariance = goals - xG;
 
   return (
-    <main className="min-h-screen bg-[#0B0E14] text-white p-6 md:p-12 space-y-10">
-      <div className="max-w-6xl mx-auto space-y-10">
-        
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center space-x-2 text-xs text-gray-400">
-          <Link href="/squad" className="hover:text-[#DA291C] transition-colors">Squad Matrix</Link>
-          <span>/</span>
-          <span className="text-white font-semibold">{player.name}</span>
-        </div>
+    <div className="min-h-screen bg-[#0B0E14] text-white p-8 font-sans">
+      {/* Header & Back Button */}
+      <header className="mb-8 max-w-6xl mx-auto">
+        <Link
+          href="/squad"
+          className="inline-flex items-center text-sm uppercase tracking-widest font-semibold text-gray-400 hover:text-white transition-colors"
+        >
+          <span className="mr-2">←</span> Return to Squad Matrix
+        </Link>
+      </header>
 
-        {/* Hero Dossier Card */}
-        <section className="bg-[#151A22] border border-[#2A313C] rounded-2xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
-          <div
-            className={`absolute top-0 left-0 right-0 h-1.5 ${
-              isLegend
-                ? 'bg-gradient-to-r from-[#D4AF37] via-amber-300 to-[#D4AF37]'
-                : 'bg-gradient-to-r from-[#7A0006] via-[#DA291C] to-[#7A0006]'
-            }`}
-          />
-
-          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 relative z-10">
-            
-            {/* Visual Column: Sharp Headshot or LegendCard */}
-            <div className="flex justify-center md:justify-start">
-              {isLegend ? (
-                <LegendCard player={playerCardData} />
-              ) : (
-                <div className="w-40 h-40 md:w-48 md:h-48 relative rounded-2xl bg-[#0B0E14] border-2 border-[#7A0006] overflow-hidden flex-shrink-0 shadow-lg flex items-center justify-center">
-                  <Image
-                    src={player.photo!}
-                    alt={player.name}
-                    fill
-                    sizes="192px"
-                    className="object-contain p-2"
-                    unoptimized
-                    priority
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Profile Overview */}
-            <div className="space-y-3 text-center md:text-left flex-1">
-              <div className="flex items-center justify-center md:justify-start space-x-3">
-                <span className={`${bebas.className} text-3xl text-[#DA291C]`}>
-                  #{player.number ?? '-'}
-                </span>
-                <span className="bg-[#0B0E14] border border-[#2A313C] text-[#D4AF37] text-xs font-bold uppercase px-3 py-0.5 rounded tracking-wider">
-                  {player.position}
-                </span>
-                {player.injured && (
-                  <span className="bg-red-950/80 border border-red-700 text-red-400 text-xs font-semibold px-2 py-0.5 rounded">
-                    Injured
-                  </span>
-                )}
-              </div>
-
-              <h1 className={`${bebas.className} text-5xl md:text-6xl text-white tracking-wide leading-none`}>
+      <div className="max-w-6xl mx-auto">
+        {/* Player Hero Card */}
+        <section className="bg-[#151A22] rounded-xl p-8 mb-8 flex flex-col md:flex-row items-center md:items-start text-center md:text-left shadow-2xl border border-gray-800/50">
+          <div className="h-28 w-28 rounded-full bg-[#0B0E14] flex items-center justify-center border border-gray-800 flex-shrink-0 mb-6 md:mb-0">
+            <span className="text-4xl font-bold text-[#D4AF37] tracking-widest">
+              {initials}
+            </span>
+          </div>
+          <div className="md:ml-8 flex-1">
+            <div className="flex flex-col md:flex-row items-center md:items-baseline space-y-2 md:space-y-0 md:space-x-4">
+              <h1 className="text-4xl md:text-5xl font-extrabold uppercase tracking-tight">
                 {player.name}
               </h1>
-
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs text-gray-400 pt-1">
-                <span>Nationality: <strong className="text-gray-200">{player.nationality || 'Manchester United'}</strong></span>
-                <span>•</span>
-                <span>Age: <strong className="text-gray-200">{player.age ?? 'N/A'}</strong></span>
-                {player.height && (
-                  <>
-                    <span>•</span>
-                    <span>Height: <strong className="text-gray-200">{player.height}</strong></span>
-                  </>
-                )}
-                {player.weight && (
-                  <>
-                    <span>•</span>
-                    <span>Weight: <strong className="text-gray-200">{player.weight}</strong></span>
-                  </>
-                )}
-              </div>
+              <span className="text-3xl font-black text-[#DA291C]">#{jersey}</span>
             </div>
-          </div>
-        </section>
-
-        {/* Season Performance Matrix */}
-        <section className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <span className="bg-[#D4AF37] w-2.5 h-6 rounded-sm block"></span>
-            <h2 className={`${bebas.className} text-3xl text-white tracking-wide`}>
-              2024/25 CAMPAIGN INDEX
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            <div className="bg-[#151A22] border border-[#2A313C] p-4 rounded-xl text-center">
-              <span className="text-gray-400 text-xs uppercase font-semibold block">Appearances</span>
-              <span className={`${bebas.className} text-3xl text-white mt-1 block`}>{totalApps}</span>
-            </div>
-            <div className="bg-[#151A22] border border-[#2A313C] p-4 rounded-xl text-center">
-              <span className="text-gray-400 text-xs uppercase font-semibold block">Minutes</span>
-              <span className={`${bebas.className} text-3xl text-gray-300 mt-1 block`}>{totalMinutes}&apos;</span>
-            </div>
-            <div className="bg-[#151A22] border border-[#2A313C] p-4 rounded-xl text-center">
-              <span className="text-gray-400 text-xs uppercase font-semibold block">Goals</span>
-              <span className={`${bebas.className} text-3xl text-[#D4AF37] mt-1 block`}>{totalGoals}</span>
-            </div>
-            <div className="bg-[#151A22] border border-[#2A313C] p-4 rounded-xl text-center">
-              <span className="text-gray-400 text-xs uppercase font-semibold block">Assists</span>
-              <span className={`${bebas.className} text-3xl text-white mt-1 block`}>{totalAssists}</span>
-            </div>
-            <div className="bg-[#151A22] border border-[#2A313C] p-4 rounded-xl text-center">
-              <span className="text-gray-400 text-xs uppercase font-semibold block">Expected Goals (xG)</span>
-              <span className={`${bebas.className} text-3xl text-[#DA291C] mt-1 block`}>{totalXG.toFixed(2)}</span>
-            </div>
-            <div className="bg-[#151A22] border border-[#2A313C] p-4 rounded-xl text-center">
-              <span className="text-gray-400 text-xs uppercase font-semibold block">Cards (Y / R)</span>
-              <span className={`${bebas.className} text-3xl text-gray-300 mt-1 block`}>
-                <span className="text-yellow-500">{totalYC}</span> / <span className="text-red-500">{totalRC}</span>
+            <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-3 text-xs font-bold tracking-widest uppercase">
+              <span className="bg-[#0B0E14] text-gray-300 px-4 py-2 rounded-md border border-gray-800">
+                {position}
+              </span>
+              <span className="bg-[#0B0E14] text-gray-300 px-4 py-2 rounded-md border border-gray-800">
+                {height}
+              </span>
+              <span className="bg-[#0B0E14] text-gray-300 px-4 py-2 rounded-md border border-gray-800">
+                {weight}
               </span>
             </div>
           </div>
         </section>
 
-        {/* Match Logs */}
-        <section className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <span className="bg-[#DA291C] w-2.5 h-6 rounded-sm block"></span>
-            <h2 className={`${bebas.className} text-3xl text-white tracking-wide`}>
-              MATCH PERFORMANCE LOG
-            </h2>
-          </div>
+        {/* 5-Tab Navigation System */}
+        <nav className="flex space-x-1 border-b border-gray-800 mb-8 overflow-x-auto scrollbar-hide pb-px">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`relative px-6 py-4 text-sm font-bold tracking-widest uppercase whitespace-nowrap transition-colors ${
+                activeTab === tab.id
+                  ? "text-white"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+            >
+              {tab.label}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#D4AF37]"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </button>
+          ))}
+        </nav>
 
-          {player.matchStats.length === 0 ? (
-            <div className="bg-[#151A22] border border-[#2A313C] rounded-xl p-8 text-center text-gray-400 text-sm">
-              No official match appearances logged for this campaign yet.
-            </div>
-          ) : (
-            <div className="bg-[#151A22] border border-[#2A313C] rounded-xl overflow-hidden shadow-xl">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-[#0E1218] border-b border-[#2A313C] text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                      <th className="py-3.5 px-4">Date</th>
-                      <th className="py-3.5 px-4">Match</th>
-                      <th className="py-3.5 px-3 text-center">Min</th>
-                      <th className="py-3.5 px-3 text-center text-[#D4AF37]">G</th>
-                      <th className="py-3.5 px-3 text-center text-[#D4AF37]">A</th>
-                      <th className="py-3.5 px-3 text-center">Rating</th>
-                      <th className="py-3.5 px-3 text-center">xG</th>
-                      <th className="py-3.5 px-3 text-center">Cards</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#2A313C]/50 text-sm">
-                    {player.matchStats.map((stat) => (
-                      <tr key={stat.id} className="hover:bg-[#1C232E] transition-colors duration-150">
-                        <td className="py-3 px-4 text-gray-400 text-xs">
-                          {new Date(stat.match.date).toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                          })}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-white">
-                          {stat.match.homeTeamName} vs {stat.match.awayTeamName}
-                        </td>
-                        <td className="py-3 px-3 text-center text-gray-300 text-xs">
-                          {stat.minutes}&apos;
-                        </td>
-                        <td className="py-3 px-3 text-center font-bold text-[#D4AF37]">
-                          {stat.goals}
-                        </td>
-                        <td className="py-3 px-3 text-center font-bold text-white">
-                          {stat.assists}
-                        </td>
-                        <td className="py-3 px-3 text-center text-xs text-gray-300">
-                          {stat.rating ? stat.rating.toFixed(1) : '-'}
-                        </td>
-                        <td className="py-3 px-3 text-center text-xs text-[#DA291C] font-semibold">
-                          {stat.xG !== null ? stat.xG.toFixed(2) : '-'}
-                        </td>
-                        <td className="py-3 px-3 text-center text-xs">
-                          {stat.yellowCards > 0 && <span className="text-yellow-500 mr-1">🟨</span>}
-                          {stat.redCards > 0 && <span className="text-red-500">🟥</span>}
-                          {stat.yellowCards === 0 && stat.redCards === 0 && <span className="text-gray-600">-</span>}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </section>
+        {/* Tab Content */}
+        <main>
+          <AnimatePresence mode="wait">
+            {activeTab === "overview" ? (
+              <motion.div
+                key="overview"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+              >
+                {/* Season Pulse Grid */}
+                <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <MetricCard title="Appearances" value={games} />
+                  <MetricCard title="Minutes Played" value={time} />
+                  <MetricCard title="Goals" value={goals} />
+                  <MetricCard title="Assists" value={assists} />
+                  <MetricCard
+                    title="Expected Goals (xG)"
+                    value={Number(xG).toFixed(2) || "0.00"}
+                  />
+                  <MetricCard
+                    title="Expected Assists (xA)"
+                    value={Number(xA).toFixed(2) || "0.00"}
+                  />
+                  <MetricCard
+                    title="Finishing Variance"
+                    value={`${finishingVariance > 0 ? "+" : ""}${finishingVariance.toFixed(2)}`}
+                    highlight={true}
+                  />
+                </div>
 
+                {/* Bio & Contract Intelligence Card */}
+                <div className="bg-[#151A22] rounded-xl p-8 border border-gray-800/50 flex flex-col justify-between shadow-2xl">
+                  <div>
+                    <h3 className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-8 flex items-center">
+                      <span className="w-2 h-2 rounded-full bg-[#D4AF37] mr-3 animate-pulse"></span>
+                      Bio & Contract Intelligence
+                    </h3>
+                    <div className="space-y-8">
+                      <div className="grid grid-cols-2 gap-4 border-b border-gray-800/50 pb-6">
+                        <div>
+                          <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">
+                            Nationality
+                          </div>
+                          <div className="text-sm font-bold text-white tracking-wide">
+                            {player.nationality || player.metadata?.nationality || "Portugal/Denmark"}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">
+                            Preferred Foot
+                          </div>
+                          <div className="text-sm font-bold text-white tracking-wide">
+                            {player.preferredFoot || player.metadata?.preferredFoot || "Right / Left"}
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">
+                          Estimated Wage
+                        </div>
+                        <div className="text-xl font-bold text-white tracking-wide">
+                          {player.metadata?.wage || "£300,000 / week"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">
+                          Contract Expiration
+                        </div>
+                        <div className="text-xl font-bold text-white tracking-wide">
+                          {player.metadata?.contractExpiry || "June 2027"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">
+                          Squad Role
+                        </div>
+                        <div className="text-sm font-bold text-[#D4AF37] uppercase tracking-widest bg-[#0B0E14] inline-block px-4 py-2 rounded-md border border-[#D4AF37]/30 mt-1">
+                          {player.metadata?.squadRole || "SENIOR FIRST TEAM"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="bg-[#151A22] rounded-xl p-12 border border-gray-800/50 flex flex-col items-center justify-center text-center min-h-[500px] shadow-2xl"
+              >
+                <div className="relative mb-8">
+                  <div className="h-16 w-16 rounded-full border-t-2 border-r-2 border-l-2 border-[#D4AF37] animate-spin opacity-50" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full border-b-2 border-[#DA291C] animate-spin-reverse" />
+                  </div>
+                </div>
+                <p className="text-gray-400 font-medium tracking-widest uppercase text-sm animate-pulse max-w-md leading-relaxed">
+                  Tactical Module Initializing<br />
+                  <span className="text-gray-600 mt-2 block">
+                    Awaiting Phase 2B/2C/2D Data Integration...
+                  </span>
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
       </div>
-    </main>
+    </div>
+  );
+}
+
+function MetricCard({
+  title,
+  value,
+  highlight = false,
+}: {
+  title: string;
+  value: string | number;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="bg-[#151A22] p-6 rounded-xl border border-gray-800/50 flex flex-col shadow-lg transition-transform hover:scale-[1.02] hover:border-gray-700">
+      <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-4">
+        {title}
+      </span>
+      <span
+        className={`text-3xl font-black mt-auto tracking-tight ${
+          highlight ? "text-[#DA291C]" : "text-white"
+        }`}
+      >
+        {value}
+      </span>
+    </div>
   );
 }
