@@ -205,7 +205,7 @@ export default function PlayerDossier() {
                             Nationality
                           </div>
                           <div className="text-sm font-bold text-white tracking-wide">
-                            {player.nationality || player.metadata?.nationality || "Portugal/Denmark"}
+                            {player.nationality || player.metadata?.nationality || "-"}
                           </div>
                         </div>
                         <div>
@@ -213,7 +213,7 @@ export default function PlayerDossier() {
                             Preferred Foot
                           </div>
                           <div className="text-sm font-bold text-white tracking-wide">
-                            {player.preferredFoot || player.metadata?.preferredFoot || "Right / Left"}
+                            {player.preferredFoot || player.metadata?.preferredFoot || "-"}
                           </div>
                         </div>
                       </div>
@@ -245,6 +245,8 @@ export default function PlayerDossier() {
                   </div>
                 </div>
               </motion.div>
+            ) : activeTab === "shot_map" ? (
+              <ShotMapTab key="shot_map" player={player} careerShots={player.metadata?.careerShots || []} />
             ) : (
               <motion.div
                 key={activeTab}
@@ -297,5 +299,216 @@ function MetricCard({
         {value}
       </span>
     </div>
+  );
+}
+
+function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[] }) {
+  const [selectedSeason, setSelectedSeason] = useState("All");
+  const [selectedSituation, setSelectedSituation] = useState("All");
+  const [selectedResult, setSelectedResult] = useState("All");
+  const [selectedShot, setSelectedShot] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (!selectedShot && careerShots.length > 0) {
+      const goals = careerShots.filter(s => s.result === "Goal").sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      if (goals.length > 0) setSelectedShot(goals[0]);
+    }
+  }, [careerShots, selectedShot]);
+
+  const uniqueSeasons = Array.from(new Set(careerShots.map(s => s.season))).sort((a, b) => Number(b) - Number(a));
+
+  const filteredShots = careerShots.filter(s => {
+    if (selectedSeason !== "All" && s.season !== selectedSeason) return false;
+    if (selectedSituation !== "All" && s.situation !== selectedSituation) return false;
+    if (selectedResult !== "All" && s.result !== selectedResult) return false;
+    return true;
+  });
+
+  const totalShots = filteredShots.length;
+  const totalXG = filteredShots.reduce((acc, s) => acc + (Number(s.xG) || 0), 0).toFixed(2);
+  const totalGoals = filteredShots.filter(s => s.result === "Goal").length;
+
+  const getShotColor = (result: string) => {
+    switch(result) {
+      case "Goal": return "#22c55e"; // Emerald Green
+      case "SavedShot": return "#38bdf8"; // Cyan Blue
+      case "BlockedShot": return "#a855f7"; // Purple
+      case "MissedShots": return "#f97316"; // Orange/Red
+      case "ShotOnPost": return "#facc15"; // Yellow
+      default: return "#9ca3af";
+    }
+  };
+
+  return (
+    <motion.div
+      key="shot_map"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2 }}
+      className="flex flex-col space-y-8"
+    >
+      {/* Top Bar: Filters & Metrics */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-[#151A22] p-6 rounded-xl border border-gray-800/50 shadow-lg space-y-4 lg:space-y-0">
+        <div className="flex flex-wrap gap-4">
+          <select 
+            value={selectedSeason} 
+            onChange={e => setSelectedSeason(e.target.value)}
+            className="bg-[#0B0E14] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            <option value="All">All Seasons</option>
+            {uniqueSeasons.map(s => <option key={s as string} value={s as string}>{s as string}</option>)}
+          </select>
+          <select 
+            value={selectedSituation} 
+            onChange={e => setSelectedSituation(e.target.value)}
+            className="bg-[#0B0E14] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            <option value="All">All Situations</option>
+            <option value="OpenPlay">Open Play</option>
+            <option value="DirectFreekick">Direct Freekick</option>
+            <option value="Penalty">Penalty</option>
+            <option value="SetPiece">Set Piece</option>
+            <option value="FromCorner">From Corner</option>
+          </select>
+          <select 
+            value={selectedResult} 
+            onChange={e => setSelectedResult(e.target.value)}
+            className="bg-[#0B0E14] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            <option value="All">All Results</option>
+            <option value="Goal">Goal</option>
+            <option value="SavedShot">Saved Shot</option>
+            <option value="BlockedShot">Blocked Shot</option>
+            <option value="MissedShots">Missed Shot</option>
+            <option value="ShotOnPost">Shot on Post</option>
+          </select>
+        </div>
+        <div className="flex gap-8">
+          <div className="flex flex-col items-end">
+            <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Goals</span>
+            <span className="text-2xl font-black text-[#22c55e]">{totalGoals}</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Total xG</span>
+            <span className="text-2xl font-black text-[#D4AF37]">{totalXG}</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Shots</span>
+            <span className="text-2xl font-black text-white">{totalShots}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* The 2D Pitch Canvas Layout */}
+        <div className="lg:col-span-2 bg-[#151A22] rounded-xl p-8 border border-gray-800/50 shadow-2xl flex flex-col items-center justify-center">
+          <div className="relative w-full max-w-2xl aspect-[4/3] bg-[#0B0E14] border-2 border-gray-600 overflow-hidden rounded-sm">
+            {/* Pitch Markings */}
+            {/* Penalty Box */}
+            <div className="absolute top-0 left-[21%] w-[58%] h-[36%] border-b-2 border-l-2 border-r-2 border-gray-600"></div>
+            {/* 6-Yard Box */}
+            <div className="absolute top-0 left-[36%] w-[28%] h-[12%] border-b-2 border-l-2 border-r-2 border-gray-600"></div>
+            {/* Penalty Spot */}
+            <div className="absolute top-[24%] left-[50%] w-2 h-2 bg-gray-600 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+            {/* Center Circle Arch */}
+            <div className="absolute top-[100%] left-[50%] w-[30%] aspect-square border-2 border-gray-600 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+
+            {/* Render Shot Dots */}
+            {filteredShots.map((shot, idx) => {
+              // shot.x is 0-100 (100 is goal line)
+              // shot.y is 0-100 (0 left, 100 right)
+              // Map to attacking half: top = (100 - X)*2
+              const topPos = (100 - shot.x) * 2;
+              const leftPos = shot.y;
+              
+              // Only render if in attacking half (topPos between 0 and 100)
+              if (topPos < 0 || topPos > 100) return null;
+
+              const radius = Math.max(5, Math.min(22, shot.xG * 24));
+              const color = getShotColor(shot.result);
+              const isGoal = shot.result === "Goal";
+              const isSelected = selectedShot?.id === shot.id;
+
+              return (
+                <div
+                  key={shot.id || idx}
+                  onClick={() => setSelectedShot(shot)}
+                  className={`absolute rounded-full cursor-pointer transition-all duration-200 transform -translate-x-1/2 -translate-y-1/2 hover:scale-150 hover:z-50 ${isSelected ? 'z-40 scale-125 ring-2 ring-white' : 'z-10'}`}
+                  style={{
+                    top: `${topPos}%`,
+                    left: `${leftPos}%`,
+                    width: `${radius}px`,
+                    height: `${radius}px`,
+                    backgroundColor: color,
+                    boxShadow: isGoal ? `0 0 10px ${color}` : 'none',
+                    opacity: isSelected ? 1 : 0.85
+                  }}
+                  title={`xG: ${shot.xG}`}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* The Shot Inspector Panel */}
+        <div className="col-span-1 bg-[#151A22] rounded-xl p-8 border border-gray-800/50 shadow-2xl flex flex-col">
+          <h3 className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-6 flex items-center">
+            <span className="w-2 h-2 rounded-full bg-[#38bdf8] mr-3 animate-pulse"></span>
+            Shot Inspector
+          </h3>
+          
+          {selectedShot ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-gray-800">
+                <div className="text-xl font-black text-white truncate mr-4">{player.name}</div>
+                <span 
+                  className="px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider text-black whitespace-nowrap"
+                  style={{ backgroundColor: getShotColor(selectedShot.result) }}
+                >
+                  {selectedShot.result}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Expected Goals (xG)</div>
+                  <div className="text-xl font-bold text-[#D4AF37]">{selectedShot.xG}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Minute</div>
+                  <div className="text-xl font-bold text-white">{selectedShot.minute}'</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Shot Type</div>
+                  <div className="text-sm font-bold text-white">{selectedShot.shotType}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Situation</div>
+                  <div className="text-sm font-bold text-white">{selectedShot.situation}</div>
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-gray-800 space-y-4">
+                <div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Match</div>
+                  <div className="text-sm font-bold text-white">{selectedShot.h_team} vs {selectedShot.a_team}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Date</div>
+                  <div className="text-sm font-bold text-gray-300">
+                    {new Date(selectedShot.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-center text-gray-500 uppercase tracking-widest text-sm font-bold">
+              Select a shot to view intelligence
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
 }

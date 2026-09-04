@@ -151,7 +151,7 @@ export default function SquadMatrix({ initialPlayers }: { initialPlayers: Player
                 <thead className="sticky top-0 z-20 shadow-sm">
                   <tr className="text-xs uppercase tracking-wider text-gray-400 border-b border-[#DA291C]/30 bg-[#0B0E14] shadow-md">
                     <SortableHeader label="#" sortKey="jersey" width="w-16" />
-                    <SortableHeader label="Player" sortKey="name" align="left" width="w-56" />
+                    <SortableHeader label="Player" sortKey="name" align="left" width="w-64" />
                     <SortableHeader label="Age" sortKey="age" width="w-12" />
                     <th className="py-4 px-4 font-semibold text-center w-16">Pos</th>
                     <SortableHeader label="Apps" sortKey="apps" />
@@ -211,7 +211,7 @@ export default function SquadMatrix({ initialPlayers }: { initialPlayers: Player
                             <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#151A22] border border-gray-700 flex-shrink-0 flex items-center justify-center">
                               <PlayerAvatar name={player.name} />
                             </div>
-                            <div className="font-bold text-white group-hover:text-[#D4AF37] transition-colors truncate">
+                            <div className="font-bold text-white group-hover:text-[#D4AF37] transition-colors whitespace-nowrap">
                               {player.name}
                             </div>
                           </div>
