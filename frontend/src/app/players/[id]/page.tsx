@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
@@ -31,6 +31,8 @@ export default function PlayerDossier() {
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const [squadList, setSquadList] = useState<Player[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchPlayer() {
@@ -46,10 +48,54 @@ export default function PlayerDossier() {
         setLoading(false);
       }
     }
+    async function fetchSquad() {
+      try {
+        const res = await fetch(`/api/squad`);
+        const data = await res.json();
+        if (data.data) {
+          const sorted = data.data.sort((a: any, b: any) => {
+             const jA = parseInt(a.metadata?.jersey || '999');
+             const jB = parseInt(b.metadata?.jersey || '999');
+             if (jA !== jB) return jA - jB;
+             return (a.id || 0) - (b.id || 0);
+          });
+          setSquadList(sorted);
+        }
+      } catch (err) {
+        console.error("Failed to fetch squad", err);
+      }
+    }
     if (id) {
       fetchPlayer();
+      fetchSquad();
     }
   }, [id]);
+
+  let prevPlayer: Player | null = null;
+  let nextPlayer: Player | null = null;
+
+  if (squadList.length > 0 && player) {
+    const currentIndex = squadList.findIndex((p) => p.espnId === player.espnId);
+    if (currentIndex !== -1) {
+      prevPlayer = squadList[currentIndex === 0 ? squadList.length - 1 : currentIndex - 1];
+      nextPlayer = squadList[currentIndex === squadList.length - 1 ? 0 : currentIndex + 1];
+    }
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input (not applicable here, but good practice)
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      
+      if (e.key === "ArrowLeft" && prevPlayer) {
+        router.push(`/players/${prevPlayer.espnId}`);
+      } else if (e.key === "ArrowRight" && nextPlayer) {
+        router.push(`/players/${nextPlayer.espnId}`);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [prevPlayer, nextPlayer, router]);
 
   if (loading) {
     return (
@@ -96,13 +142,35 @@ export default function PlayerDossier() {
   return (
     <div className="min-h-screen bg-[#0B0E14] text-white p-8 font-sans">
       {/* Header & Back Button */}
-      <header className="mb-8 max-w-6xl mx-auto">
-        <Link
-          href="/squad"
-          className="inline-flex items-center text-sm uppercase tracking-widest font-semibold text-gray-400 hover:text-white transition-colors"
-        >
-          <span className="mr-2">←</span> Return to Squad Matrix
-        </Link>
+      <header className="mb-8 max-w-6xl mx-auto flex items-center justify-between border-b border-gray-800 pb-4">
+        <div className="flex-1 text-left">
+          {prevPlayer && (
+            <Link
+              href={`/players/${prevPlayer.espnId}`}
+              className="inline-flex items-center text-xs uppercase tracking-widest font-semibold text-gray-400 hover:text-white transition-colors"
+            >
+              <span className="mr-2">←</span> {prevPlayer.name} <span className="ml-1 text-gray-600">#{prevPlayer.metadata?.jersey || '00'}</span>
+            </Link>
+          )}
+        </div>
+        <div className="flex-1 text-center">
+          <Link
+            href="/squad"
+            className="inline-flex items-center px-4 py-2 text-xs uppercase tracking-widest font-bold text-[#0B0E14] bg-[#D4AF37] hover:bg-white transition-colors rounded-sm"
+          >
+            📋 Squad Directory
+          </Link>
+        </div>
+        <div className="flex-1 text-right">
+          {nextPlayer && (
+            <Link
+              href={`/players/${nextPlayer.espnId}`}
+              className="inline-flex items-center text-xs uppercase tracking-widest font-semibold text-gray-400 hover:text-white transition-colors"
+            >
+              {nextPlayer.name} <span className="ml-1 text-gray-600">#{nextPlayer.metadata?.jersey || '00'}</span> <span className="ml-2">→</span>
+            </Link>
+          )}
+        </div>
       </header>
 
       <div className="max-w-6xl mx-auto">
@@ -119,6 +187,27 @@ export default function PlayerDossier() {
                 {player.name}
               </h1>
               <span className="text-3xl font-black text-[#DA291C]">#{jersey}</span>
+              
+              {/* Quick-Switch Dropdown */}
+              {squadList.length > 0 && (
+                <div className="md:ml-6 mt-2 md:mt-0">
+                  <select
+                    className="bg-[#151A22] text-[#D4AF37] text-sm font-bold uppercase tracking-widest border border-gray-700 rounded-md px-3 py-2 outline-none cursor-pointer hover:border-[#D4AF37] transition-colors"
+                    value={player.espnId || ""}
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        router.push(`/players/${e.target.value}`);
+                      }
+                    }}
+                  >
+                    {squadList.map(p => (
+                      <option key={p.espnId} value={p.espnId}>
+                        {p.name} #{p.metadata?.jersey || '00'}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-3 text-xs font-bold tracking-widest uppercase">
               <span className="bg-[#0B0E14] text-gray-300 px-4 py-2 rounded-md border border-gray-800">
@@ -220,10 +309,10 @@ export default function PlayerDossier() {
                       </div>
                       <div>
                         <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-2">
-                          Estimated Wage
+                          Market Valuation
                         </div>
-                        <div className="text-xl font-bold text-white tracking-wide">
-                          {player.metadata?.wage || "£300,000 / week"}
+                        <div className="text-3xl font-bold text-[#D4AF37] tracking-wide">
+                          {player.metadata?.marketValue || "€500k (Academy)"}
                         </div>
                       </div>
                       <div>
@@ -231,7 +320,7 @@ export default function PlayerDossier() {
                           Contract Expiration
                         </div>
                         <div className="text-xl font-bold text-white tracking-wide">
-                          {player.metadata?.contractExpiry || "June 2027"}
+                          {player.metadata?.contractEnd || "Awaiting Extension"}
                         </div>
                       </div>
                       <div>
@@ -239,7 +328,7 @@ export default function PlayerDossier() {
                           Squad Role
                         </div>
                         <div className="text-sm font-bold text-[#D4AF37] uppercase tracking-widest bg-[#0B0E14] inline-block px-4 py-2 rounded-md border border-[#D4AF37]/30 mt-1">
-                          {player.metadata?.squadRole || "SENIOR FIRST TEAM"}
+                          {player.squadRole || "SENIOR FIRST TEAM"}
                         </div>
                       </div>
                     </div>
@@ -761,13 +850,15 @@ function StatRow({ label, data, hideBadge = false, customBadgeText, customBadgeC
 
 function LedgerTab({ player }: { player: Player }) {
   let careerData = player.careerHistory || player.metadata?.careerHistory || player.metadata?.seasonStats?.history;
+  let showMigrationBanner = false;
   
   if (!careerData || careerData.length === 0) {
-    careerData = [
+    if (player.espnId === "124091") {
+      careerData = [
       { 
         season: "2026/2027", 
-        club: "Manchester United", 
-        comp: "Premier League", 
+        club: null, 
+        comp: null, 
         apps: player.metadata?.seasonStats?.apps || player.metadata?.seasonStats?.games || 3, 
         min: player.metadata?.seasonStats?.minutes || player.metadata?.seasonStats?.time || 270, 
         goals: player.metadata?.seasonStats?.goals || 3, 
@@ -789,7 +880,23 @@ function LedgerTab({ player }: { player: Player }) {
       { season: "2015/2016", club: "Udinese", comp: "Serie A", apps: 31, min: 2174, goals: 3, assists: 4, xG: 3.3, xA: 2.8 },
       { season: "2014/2015", club: "Udinese", comp: "Serie A", apps: 31, min: 1989, goals: 3, assists: 2, xG: 3.5, xA: 2.3 },
       { season: "2013/2014", club: "Udinese", comp: "Serie A", apps: 24, min: 1667, goals: 4, assists: 6, xG: 4.8, xA: 4.5 },
-    ];
+      ];
+    } else {
+      careerData = [
+        { 
+          season: "2026/2027", 
+          club: null, 
+          comp: null, 
+          apps: player.metadata?.seasonStats?.apps || player.metadata?.seasonStats?.games || 0, 
+          min: player.metadata?.seasonStats?.minutes || player.metadata?.seasonStats?.time || 0, 
+          goals: player.metadata?.seasonStats?.goals || 0, 
+          assists: player.metadata?.seasonStats?.assists || 0, 
+          xG: player.metadata?.seasonStats?.xG ? parseFloat(player.metadata.seasonStats.xG) : null, 
+          xA: player.metadata?.seasonStats?.xA ? parseFloat(player.metadata.seasonStats.xA) : null
+        }
+      ];
+      showMigrationBanner = true;
+    }
   }
 
   const totals = careerData.reduce((acc: any, row: any) => {
@@ -851,9 +958,11 @@ function LedgerTab({ player }: { player: Player }) {
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums">{row.season}</td>
                 <td className="px-6 py-4 whitespace-nowrap font-bold text-white flex items-center">
                   <div className="w-4 h-4 rounded-full bg-white/10 mr-2 border border-white/20"></div>
-                  {row.club}
+                  {row.club || row.clubName || player.metadata?.team || player.metadata?.teamName || "-"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-400">{row.comp}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-gray-400">
+                  {row.comp || row.competition || player.metadata?.league || player.metadata?.leagueName || "-"}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-400">{row.apps}</td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-500">{row.min}</td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-white font-black">{row.goals}</td>
@@ -868,6 +977,16 @@ function LedgerTab({ player }: { player: Player }) {
                 </td>
               </tr>
             ))}
+            {showMigrationBanner && (
+              <tr>
+                <td colSpan={9} className="px-6 py-8 text-center bg-[#0B0E14]/30 border-t border-white/5">
+                  <div className="inline-flex items-center space-x-2 text-gray-500 font-mono text-[11px] tracking-widest uppercase bg-black/40 px-4 py-2 rounded-full border border-white/5">
+                    <span>🔒</span>
+                    <span>Multi-Season Historical Campaign Data Awaiting Stage 3 Migration</span>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
           <tfoot className="bg-[#0B0E14]/80 backdrop-blur-md sticky bottom-0 border-t border-[#D4AF37]/30 text-white font-bold shadow-[0_-10px_20px_rgba(0,0,0,0.3)]">
             <tr>

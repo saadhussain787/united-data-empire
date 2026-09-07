@@ -207,14 +207,16 @@ export default function SquadMatrix({ initialPlayers }: { initialPlayers: Player
                           {jersey}
                         </td>
                         <td className="py-4 px-4">
-                          <div className="flex items-center space-x-4">
-                            <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#151A22] border border-gray-700 flex-shrink-0 flex items-center justify-center">
-                              <PlayerAvatar name={player.name} />
+                          <Link href={`/players/${player.espnId}`}>
+                            <div className="flex items-center space-x-4 cursor-pointer group/link">
+                              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#151A22] border border-gray-700 flex-shrink-0 flex items-center justify-center">
+                                <PlayerAvatar name={player.name} />
+                              </div>
+                              <div className="font-bold text-white group-hover/link:text-[#DA291C] transition-colors whitespace-nowrap">
+                                {player.name}
+                              </div>
                             </div>
-                            <div className="font-bold text-white group-hover:text-[#D4AF37] transition-colors whitespace-nowrap">
-                              {player.name}
-                            </div>
-                          </div>
+                          </Link>
                         </td>
                         <td className="py-4 px-4 text-center text-gray-300 font-mono w-12">{age}</td>
                         <td className="py-4 px-4 text-center text-xs text-gray-400 font-bold uppercase tracking-wider w-16 truncate">{posAbbr}</td>
