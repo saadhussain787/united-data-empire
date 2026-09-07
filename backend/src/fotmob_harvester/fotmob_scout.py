@@ -58,6 +58,44 @@ def main():
     
     print(f"Extracted {len(radar_percentiles)} percentile metrics.")
     
+    print("[2B] Parsing Bio Information...")
+    nationality = None
+    preferred_foot = None
+    contract_end = None
+    market_value = None
+    
+    from datetime import datetime
+
+    for info in data.get("playerInformation", []):
+        title = info.get("title", "")
+        val_dict = info.get("value", {})
+        fallback = val_dict.get("fallback", "")
+        
+        if title == "Country":
+            nationality = fallback
+        elif title == "Preferred foot":
+            preferred_foot = fallback
+        elif title == "Market value":
+            market_value = fallback
+        elif title == "Contract end":
+            date_val = val_dict.get("dateValue")
+            if not date_val and isinstance(fallback, dict):
+                utc_time = fallback.get("utcTime", "")
+                if "T" in utc_time:
+                    date_val = utc_time.split("T")[0]
+            if date_val:
+                try:
+                    dt = datetime.strptime(date_val, "%Y-%m-%d")
+                    contract_end = dt.strftime("%b %d, %Y")
+                except Exception:
+                    contract_end = date_val
+                    
+    bio_metadata = {}
+    if contract_end:
+        bio_metadata["contractEnd"] = contract_end
+    if market_value:
+        bio_metadata["marketValue"] = market_value
+    
     # 3. Database Injection
     print("[3] Connecting to Supabase DB & Injecting...")
     db_url = os.getenv("DATABASE_URL")
@@ -83,26 +121,35 @@ def main():
         )
         
         # Idempotent JSONB Merge
-        # jsonb_set(COALESCE(metadata, '{}'::jsonb), '{percentiles}', :percentiles::jsonb, true)
         sql = """
         UPDATE "Player"
-        SET metadata = jsonb_set(
-            COALESCE(metadata, '{}'::jsonb), 
-            '{percentiles}', 
-            :percentiles::jsonb, 
-            true
-        )
+        SET 
+            "nationality" = COALESCE(:nationality, "nationality"),
+            "preferredFoot" = COALESCE(:preferred_foot, "preferredFoot"),
+            metadata = jsonb_set(
+                COALESCE(metadata, '{}'::jsonb) || :bio_metadata::jsonb,
+                '{percentiles}', 
+                :percentiles::jsonb, 
+                true
+            )
         WHERE "espnId" = '124091'
         RETURNING "espnId";
         """
         
         percentiles_json = json.dumps(radar_percentiles)
+        bio_metadata_json = json.dumps(bio_metadata)
         
-        result = conn.run(sql, percentiles=percentiles_json)
+        result = conn.run(
+            sql, 
+            percentiles=percentiles_json, 
+            nationality=nationality,
+            preferred_foot=preferred_foot,
+            bio_metadata=bio_metadata_json
+        )
         conn.close()
         
         if result:
-            print("[4] Success! metadata->percentiles updated for Bruno Fernandes (espnId='124091').")
+            print("[4] Success! Nationality, foot, and metadata updated for Bruno Fernandes.")
         else:
             print("[4] Warning: Update ran, but no rows were modified. Ensure espnId '124091' exists in Player table.")
         
