@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 // Types
 type Player = {
@@ -247,6 +248,8 @@ export default function PlayerDossier() {
               </motion.div>
             ) : activeTab === "shot_map" ? (
               <ShotMapTab key="shot_map" player={player} careerShots={player.metadata?.careerShots || []} />
+            ) : activeTab === "radar" ? (
+              <RadarTab key="radar" player={player} />
             ) : (
               <motion.div
                 key={activeTab}
@@ -303,38 +306,33 @@ function MetricCard({
 }
 
 function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[] }) {
-  const [selectedSeason, setSelectedSeason] = useState("All");
-  const [selectedSituation, setSelectedSituation] = useState("All");
-  const [selectedResult, setSelectedResult] = useState("All");
+  const [selectedSeason, setSelectedSeason] = useState("All Seasons");
+  const [selectedSituation, setSelectedSituation] = useState("All Situations");
+  const [selectedResult, setSelectedResult] = useState("All Results");
   const [selectedShot, setSelectedShot] = useState<any | null>(null);
 
-  useEffect(() => {
-    if (!selectedShot && careerShots.length > 0) {
-      const goals = careerShots.filter(s => s.result === "Goal").sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      if (goals.length > 0) setSelectedShot(goals[0]);
-    }
-  }, [careerShots, selectedShot]);
-
-  const uniqueSeasons = Array.from(new Set(careerShots.map(s => s.season))).sort((a, b) => Number(b) - Number(a));
+  const uniqueSeasons = Array.from(new Set(careerShots.map(s => s.season))).filter(Boolean).sort((a, b) => Number(b) - Number(a));
+  const uniqueSituations = Array.from(new Set(careerShots.map(s => s.situation))).filter(Boolean).sort();
+  const uniqueResults = Array.from(new Set(careerShots.map(s => s.result))).filter(Boolean).sort();
 
   const filteredShots = careerShots.filter(s => {
-    if (selectedSeason !== "All" && s.season !== selectedSeason) return false;
-    if (selectedSituation !== "All" && s.situation !== selectedSituation) return false;
-    if (selectedResult !== "All" && s.result !== selectedResult) return false;
+    if (selectedSeason !== "All Seasons" && s.season !== selectedSeason) return false;
+    if (selectedSituation !== "All Situations" && s.situation !== selectedSituation) return false;
+    if (selectedResult !== "All Results" && s.result !== selectedResult) return false;
     return true;
   });
 
-  const totalShots = filteredShots.length;
+  const goals = filteredShots.filter(s => s.result === "Goal").length;
   const totalXG = filteredShots.reduce((acc, s) => acc + (Number(s.xG) || 0), 0).toFixed(2);
-  const totalGoals = filteredShots.filter(s => s.result === "Goal").length;
+  const shots = filteredShots.length;
 
   const getShotColor = (result: string) => {
     switch(result) {
-      case "Goal": return "#22c55e"; // Emerald Green
-      case "SavedShot": return "#38bdf8"; // Cyan Blue
-      case "BlockedShot": return "#a855f7"; // Purple
-      case "MissedShots": return "#f97316"; // Orange/Red
-      case "ShotOnPost": return "#facc15"; // Yellow
+      case "Goal": return "#22c55e";
+      case "SavedShot": return "#38bdf8";
+      case "BlockedShot": return "#a855f7";
+      case "MissedShots": return "#f97316";
+      case "ShotOnPost": return "#facc15";
       default: return "#9ca3af";
     }
   };
@@ -346,48 +344,40 @@ function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.2 }}
-      className="flex flex-col space-y-8"
+      className="bg-[#151A22] rounded-xl p-8 border border-gray-800/50 shadow-2xl flex flex-col min-h-[500px]"
     >
       {/* Top Bar: Filters & Metrics */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-[#151A22] p-6 rounded-xl border border-gray-800/50 shadow-lg space-y-4 lg:space-y-0">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-[#0B0E14] p-6 rounded-xl border border-gray-800/50 shadow-lg mb-8 space-y-4 lg:space-y-0">
         <div className="flex flex-wrap gap-4">
           <select 
             value={selectedSeason} 
             onChange={e => setSelectedSeason(e.target.value)}
-            className="bg-[#0B0E14] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
+            className="bg-[#151A22] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
           >
-            <option value="All">All Seasons</option>
+            <option value="All Seasons">All Seasons</option>
             {uniqueSeasons.map(s => <option key={s as string} value={s as string}>{s as string}</option>)}
           </select>
           <select 
             value={selectedSituation} 
             onChange={e => setSelectedSituation(e.target.value)}
-            className="bg-[#0B0E14] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
+            className="bg-[#151A22] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
           >
-            <option value="All">All Situations</option>
-            <option value="OpenPlay">Open Play</option>
-            <option value="DirectFreekick">Direct Freekick</option>
-            <option value="Penalty">Penalty</option>
-            <option value="SetPiece">Set Piece</option>
-            <option value="FromCorner">From Corner</option>
+            <option value="All Situations">All Situations</option>
+            {uniqueSituations.map(s => <option key={s as string} value={s as string}>{s as string}</option>)}
           </select>
           <select 
             value={selectedResult} 
             onChange={e => setSelectedResult(e.target.value)}
-            className="bg-[#0B0E14] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
+            className="bg-[#151A22] text-white border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
           >
-            <option value="All">All Results</option>
-            <option value="Goal">Goal</option>
-            <option value="SavedShot">Saved Shot</option>
-            <option value="BlockedShot">Blocked Shot</option>
-            <option value="MissedShots">Missed Shot</option>
-            <option value="ShotOnPost">Shot on Post</option>
+            <option value="All Results">All Results</option>
+            {uniqueResults.map(r => <option key={r as string} value={r as string}>{r as string}</option>)}
           </select>
         </div>
         <div className="flex gap-8">
           <div className="flex flex-col items-end">
             <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Goals</span>
-            <span className="text-2xl font-black text-[#22c55e]">{totalGoals}</span>
+            <span className="text-2xl font-black text-[#22c55e]">{goals}</span>
           </div>
           <div className="flex flex-col items-end">
             <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Total xG</span>
@@ -395,39 +385,35 @@ function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[
           </div>
           <div className="flex flex-col items-end">
             <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Shots</span>
-            <span className="text-2xl font-black text-white">{totalShots}</span>
+            <span className="text-2xl font-black text-white">{shots}</span>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* The 2D Pitch Canvas Layout */}
-        <div className="lg:col-span-2 bg-[#151A22] rounded-xl p-8 border border-gray-800/50 shadow-2xl flex flex-col items-center justify-center">
-          <div className="relative w-full max-w-2xl aspect-[4/3] bg-[#0B0E14] border-2 border-gray-600 overflow-hidden rounded-sm">
+        {/* Pitch Canvas Layout */}
+        <div className="lg:col-span-2 bg-[#0B0E14] rounded-xl p-8 border border-gray-800/50 shadow-2xl flex flex-col items-center justify-center">
+          <div className="relative w-full max-w-2xl aspect-[16/10] bg-[#1a3826] border-2 border-gray-600 overflow-hidden rounded-sm">
             {/* Pitch Markings */}
-            {/* Penalty Box */}
-            <div className="absolute top-0 left-[21%] w-[58%] h-[36%] border-b-2 border-l-2 border-r-2 border-gray-600"></div>
-            {/* 6-Yard Box */}
-            <div className="absolute top-0 left-[36%] w-[28%] h-[12%] border-b-2 border-l-2 border-r-2 border-gray-600"></div>
-            {/* Penalty Spot */}
-            <div className="absolute top-[24%] left-[50%] w-2 h-2 bg-gray-600 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-            {/* Center Circle Arch */}
-            <div className="absolute top-[100%] left-[50%] w-[30%] aspect-square border-2 border-gray-600 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-
-            {/* Render Shot Dots */}
+            <div className="absolute top-0 left-[21%] w-[58%] h-[36%] border-b-2 border-l-2 border-r-2 border-white/40"></div>
+            <div className="absolute top-0 left-[36%] w-[28%] h-[12%] border-b-2 border-l-2 border-r-2 border-white/40"></div>
+            <div className="absolute top-[24%] left-[50%] w-2 h-2 bg-white/40 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+            
+            {/* Dots */}
             {filteredShots.map((shot, idx) => {
-              // shot.x is 0-100 (100 is goal line)
-              // shot.y is 0-100 (0 left, 100 right)
-              // Map to attacking half: top = (100 - X)*2
-              const topPos = (100 - shot.x) * 2;
-              const leftPos = shot.y;
+              // Understat X (0-100): 100 is opponent's goal line. 
+              // Understat Y (0-100): 0 is left, 100 is right.
+              // Our pitch is a half-pitch (attacking half) with the goal at the top (top: 0%).
+              // Midfield (X=50) should be at the bottom (top: 100%).
+              // Therefore: top = (100 - X) * 2
+              const topPos = (100 - parseFloat(shot.x)) * 2;
+              const leftPos = parseFloat(shot.y);
               
-              // Only render if in attacking half (topPos between 0 and 100)
+              // Only render shots in the attacking half
               if (topPos < 0 || topPos > 100) return null;
 
-              const radius = Math.max(5, Math.min(22, shot.xG * 24));
+              const radius = Math.max(6, parseFloat(shot.xG || 0) * 30);
               const color = getShotColor(shot.result);
-              const isGoal = shot.result === "Goal";
               const isSelected = selectedShot?.id === shot.id;
 
               return (
@@ -436,12 +422,12 @@ function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[
                   onClick={() => setSelectedShot(shot)}
                   className={`absolute rounded-full cursor-pointer transition-all duration-200 transform -translate-x-1/2 -translate-y-1/2 hover:scale-150 hover:z-50 ${isSelected ? 'z-40 scale-125 ring-2 ring-white' : 'z-10'}`}
                   style={{
-                    top: `${topPos}%`,
                     left: `${leftPos}%`,
+                    top: `${topPos}%`,
                     width: `${radius}px`,
                     height: `${radius}px`,
                     backgroundColor: color,
-                    boxShadow: isGoal ? `0 0 10px ${color}` : 'none',
+                    boxShadow: shot.result === "Goal" ? `0 0 10px ${color}` : 'none',
                     opacity: isSelected ? 1 : 0.85
                   }}
                   title={`xG: ${shot.xG}`}
@@ -451,7 +437,7 @@ function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[
           </div>
         </div>
 
-        {/* The Shot Inspector Panel */}
+        {/* Shot Inspector Panel */}
         <div className="col-span-1 bg-[#151A22] rounded-xl p-8 border border-gray-800/50 shadow-2xl flex flex-col">
           <h3 className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-6 flex items-center">
             <span className="w-2 h-2 rounded-full bg-[#38bdf8] mr-3 animate-pulse"></span>
@@ -473,7 +459,7 @@ function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Expected Goals (xG)</div>
-                  <div className="text-xl font-bold text-[#D4AF37]">{selectedShot.xG}</div>
+                  <div className="text-xl font-bold text-[#D4AF37]">{Number(selectedShot.xG).toFixed(3)}</div>
                 </div>
                 <div>
                   <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Minute</div>
@@ -504,9 +490,108 @@ function ShotMapTab({ player, careerShots }: { player: Player; careerShots: any[
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-center text-gray-500 uppercase tracking-widest text-sm font-bold">
-              Select a shot to view intelligence
+              Click any shot dot on the pitch to inspect its individual Moneyball xG probability and match data.
             </div>
           )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function RadarTab({ player }: { player: Player }) {
+  const percentiles = player.metadata?.percentiles;
+  
+  if (!percentiles || Object.keys(percentiles).length === 0) {
+    return (
+      <motion.div
+        key="radar"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+        className="bg-[#151A22] rounded-xl p-12 border border-gray-800/50 flex flex-col items-center justify-center text-center min-h-[500px] shadow-2xl relative overflow-hidden"
+      >
+        <div className="absolute inset-0 backdrop-blur-sm bg-black/20 z-0"></div>
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="text-6xl mb-6">🔒</div>
+          <h2 className="text-[#D4AF37] font-bold text-2xl tracking-widest uppercase mb-4">Insufficient Data Volume</h2>
+          <p className="text-gray-400 max-w-md text-sm leading-relaxed font-medium">
+            Player requires a minimum minute threshold in the current campaign to generate an accurate European Percentile Radar.
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Desired core metrics with fallback keys for resilient matching
+  const targetMetrics = [
+    { label: "Goals", keys: ["Goals"] },
+    { label: "Assists", keys: ["Assists"] },
+    { label: "Chances created", keys: ["Chances created"] },
+    { label: "Touches", keys: ["Touches"] },
+    { label: "Successful passes", keys: ["Accurate passes", "Successful passes", "Pass completion %", "Passes"] },
+    { label: "Tackles won", keys: ["Tackles won", "Tackles", "Tackles won per 90"] },
+    { label: "Recoveries", keys: ["Recoveries", "Defensive actions"] }
+  ];
+
+  const availableKeys = Object.keys(percentiles);
+
+  // Map to recharts format
+  const chartData = targetMetrics.map(metric => {
+    let dataNode = null;
+    for (const keyToMatch of metric.keys) {
+      const match = availableKeys.find(k => k.toLowerCase() === keyToMatch.toLowerCase());
+      if (match && percentiles[match]) {
+        dataNode = percentiles[match];
+        break;
+      }
+    }
+    
+    const val = dataNode ? Math.round(Number(dataNode.percentileRank) || 0) : 0;
+    return {
+      subject: metric.label,
+      A: val,
+      fullMark: 100,
+    };
+  });
+
+  return (
+    <motion.div
+      key="radar"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2 }}
+      className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+    >
+      <div className="lg:col-span-2 bg-[#151A22] rounded-xl p-8 border border-gray-800/50 shadow-2xl min-h-[500px] flex items-center justify-center">
+        <ResponsiveContainer width="100%" height={400}>
+          <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+            <PolarGrid stroke="rgba(255,255,255,0.1)" />
+            <PolarAngleAxis dataKey="subject" tick={{ fill: "#9ca3af", fontSize: 12, fontWeight: 600 }} />
+            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+            <Tooltip 
+              contentStyle={{ backgroundColor: "#0B0E14", borderColor: "#374151", color: "#fff" }}
+              itemStyle={{ color: "#D4AF37", fontWeight: "bold" }}
+            />
+            <Radar name={player.name} dataKey="A" stroke="#DA291C" fill="#DA291C" fillOpacity={0.6} />
+          </RadarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="col-span-1 bg-[#151A22] rounded-xl p-8 border border-gray-800/50 shadow-2xl flex flex-col">
+        <h3 className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-6 flex items-center">
+          <span className="w-2 h-2 rounded-full bg-[#DA291C] mr-3 animate-pulse"></span>
+          Percentile Breakdown
+        </h3>
+        <div className="space-y-4 overflow-y-auto pr-2">
+          {chartData.map((d, i) => (
+            <div key={i} className="flex justify-between items-center border-b border-gray-800/50 pb-3">
+              <span className="text-sm font-bold text-gray-300">{d.subject}</span>
+              <span className="text-lg font-black text-[#D4AF37]">{d.A}%</span>
+            </div>
+          ))}
         </div>
       </div>
     </motion.div>
