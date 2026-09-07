@@ -250,6 +250,8 @@ export default function PlayerDossier() {
               <ShotMapTab key="shot_map" player={player} careerShots={player.metadata?.careerShots || []} />
             ) : activeTab === "radar" ? (
               <RadarTab key="radar" player={player} />
+            ) : activeTab === "playmaking" ? (
+              <PlaymakingTab key="playmaking" player={player} />
             ) : (
               <motion.div
                 key={activeTab}
@@ -595,5 +597,162 @@ function RadarTab({ player }: { player: Player }) {
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function PlaymakingTab({ player }: { player: Player }) {
+  const percentiles = player.metadata?.percentiles;
+  
+  if (!percentiles || Object.keys(percentiles).length === 0) {
+    return (
+      <motion.div
+        key="playmaking"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+        className="bg-[#151A22] rounded-xl p-12 border border-gray-800/50 flex flex-col items-center justify-center text-center min-h-[500px] shadow-2xl relative overflow-hidden"
+      >
+        <div className="absolute inset-0 backdrop-blur-sm bg-black/20 z-0"></div>
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="text-6xl mb-6">🔒</div>
+          <h2 className="text-[#D4AF37] font-bold text-2xl tracking-widest uppercase mb-4">Insufficient Data Volume</h2>
+          <p className="text-gray-400 max-w-md text-sm leading-relaxed font-medium">
+            Player requires a minimum minute threshold in the current campaign to generate an accurate European Percentile Radar.
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
+
+  const getMetric = (keys: string[]) => {
+    const availableKeys = Object.keys(percentiles);
+    for (const key of keys) {
+      const match = availableKeys.find(k => k.toLowerCase() === key.toLowerCase());
+      if (match && percentiles[match]) return percentiles[match];
+    }
+    return null;
+  };
+
+  const lineBreakingPasses = getMetric(["Line-breaking passes", "Line breaking passes"]);
+  const accurateLongBalls = getMetric(["Accurate long balls", "Long balls"]);
+  const successfulCrosses = getMetric(["Successful crosses", "Crosses"]);
+  const passAccuracy = getMetric(["Pass accuracy", "Accurate passes %", "Pass completion %"]);
+  const longBallAccuracy = getMetric(["Long ball accuracy", "Long ball accuracy %"]);
+
+  const chancesCreated = getMetric(["Chances created"]);
+  const bigChancesCreated = getMetric(["Big chances created", "Big chances"]);
+  const touchesInOppBox = getMetric(["Touches in opp. box", "Touches in opposition box"]);
+  const possessionWonFinalThird = getMetric(["Possession won final 3rd", "Possession won attacking third"]);
+  const defensiveActions = getMetric(["Defensive actions", "Recoveries"]);
+
+  const distanceCovered = getMetric(["Total distance covered", "Distance covered", "Total distance"]);
+  const topSpeed = getMetric(["Top speed", "Sprint speed"]);
+  const numberOfSprints = getMetric(["Sprints", "Number of sprints"]);
+  const running = getMetric(["Running", "Running distance"]);
+  const sprinting = getMetric(["Sprinting", "Sprinting distance"]);
+
+  const formatPercent = (val: string) => `${val}%`;
+  const formatKm = (val: string) => `${(parseFloat(val) / 1000).toFixed(1)} km`;
+  const formatKmh = (val: string) => `${val} km/h`;
+  const formatMeters = (val: string) => `${Math.round(parseFloat(val))} m`;
+
+  return (
+    <motion.div
+      key="playmaking"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-8"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Card 1: Elite Distribution */}
+        <div className="bg-[#151A22] rounded-xl p-8 border border-white/5 shadow-2xl">
+          <h3 className="text-[#D4AF37] font-bold tracking-widest uppercase mb-6 flex items-center">
+            <span className="text-xl mr-3">📐</span>
+            Elite Distribution & Line-Breaking
+          </h3>
+          
+          <div className="space-y-4">
+            <StatRow label="Line-breaking passes" data={lineBreakingPasses} />
+            <StatRow label="Accurate long balls" data={accurateLongBalls} />
+            <StatRow label="Successful crosses" data={successfulCrosses} />
+            <StatRow label="Pass accuracy" data={passAccuracy} hideBadge={true} formatValue={formatPercent} />
+            <StatRow label="Long ball accuracy" data={longBallAccuracy} hideBadge={true} formatValue={formatPercent} />
+          </div>
+        </div>
+
+        {/* Card 2: Chance Creation & High Pressing */}
+        <div className="bg-[#151A22] rounded-xl p-8 border border-white/5 shadow-2xl">
+          <h3 className="text-[#D4AF37] font-bold tracking-widest uppercase mb-6 flex items-center">
+            <span className="text-xl mr-3">⚡</span>
+            Chance Creation & High Pressing
+          </h3>
+          
+          <div className="space-y-4">
+            <StatRow label="Chances created" data={chancesCreated} />
+            <StatRow label="Big chances created" data={bigChancesCreated} />
+            <StatRow label="Touches in opposition box" data={touchesInOppBox} />
+            <StatRow 
+              label="Possession won final 3rd" 
+              data={possessionWonFinalThird} 
+              customBadgeText="High Gegenpressing Trigger"
+              customBadgeClass="bg-[#DA291C]/20 text-[#D4AF37] border border-[#DA291C]/30"
+            />
+            <StatRow label="Defensive actions" data={defensiveActions} />
+          </div>
+        </div>
+
+        {/* Card 3: Physical & Athletic Workrate Engine */}
+        <div className="bg-[#151A22] rounded-xl p-8 border border-white/5 shadow-2xl">
+          <h3 className="text-[#D4AF37] font-bold tracking-widest uppercase mb-6 flex items-center">
+            <span className="text-xl mr-3">🏃</span>
+            Physical & Athletic Engine
+          </h3>
+          
+          <div className="space-y-4">
+            <StatRow label="Distance covered" data={distanceCovered} formatValue={formatKm} />
+            <StatRow label="Top speed" data={topSpeed} formatValue={formatKmh} />
+            <StatRow label="Sprints" data={numberOfSprints} />
+            <StatRow label="Running" data={running} formatValue={formatKm} />
+            <StatRow label="Sprinting" data={sprinting} formatValue={formatMeters} />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function StatRow({ label, data, hideBadge = false, customBadgeText, customBadgeClass, formatValue }: { label: string, data: any, hideBadge?: boolean, customBadgeText?: string, customBadgeClass?: string, formatValue?: (val: string) => string }) {
+  if (!data) {
+    return (
+      <div className="flex justify-between items-center border-b border-white/5 pb-3 last:border-0 last:pb-0">
+        <span className="text-sm font-bold text-gray-400">{label}</span>
+        <span className="text-sm font-mono font-black text-gray-600">-</span>
+      </div>
+    );
+  }
+  
+  const rawValue = data.statValue || "0";
+  const value = formatValue ? formatValue(rawValue.toString()) : rawValue;
+  const percentile = Math.round(Number(data.percentileRank) || 0);
+  
+  const defaultBadgeClass = percentile >= 90 ? 'bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30' : 'bg-gray-800/50 text-gray-400';
+  const badgeClass = customBadgeClass || defaultBadgeClass;
+  const badgeText = customBadgeText || `${percentile}TH PCT`;
+  
+  return (
+    <div className="flex justify-between items-center border-b border-white/5 pb-3 last:border-0 last:pb-0">
+      <span className="text-sm font-bold text-gray-400">{label}</span>
+      <div className="flex items-center space-x-3">
+        <span className="text-lg font-mono font-black text-white">{value}</span>
+        {!hideBadge && (
+          <span className={`text-[10px] px-2 py-1 rounded font-bold tracking-wider uppercase ${badgeClass}`}>
+            {badgeText}
+          </span>
+        )}
+      </div>
+    </div>
   );
 }
