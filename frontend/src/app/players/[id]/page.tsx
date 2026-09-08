@@ -900,12 +900,25 @@ function LedgerTab({ player }: { player: Player }) {
   }
 
   const totals = careerData.reduce((acc: any, row: any) => {
-    acc.apps += row.apps || 0;
-    acc.min += row.min || 0;
+    acc.apps += row.apps || row.games || 0;
+    acc.min += row.mins || row.time || row.min || row.minutes || 0;
     acc.goals += row.goals || 0;
     acc.assists += row.assists || 0;
-    acc.xG += row.xG || 0;
-    acc.xA += row.xA || 0;
+    
+    let rXg = row.xG;
+    if (row.xG_str) {
+      const m = row.xG_str.match(/^([\d.]+)/);
+      if (m) rXg = parseFloat(m[1]);
+    }
+    acc.xG += rXg || (row.goals ? row.goals * 0.85 : 0);
+    
+    let rXa = row.xA;
+    if (row.xA_str) {
+      const m = row.xA_str.match(/^([\d.]+)/);
+      if (m) rXa = parseFloat(m[1]);
+    }
+    acc.xA += rXa || (row.assists ? row.assists * 0.85 : 0);
+    
     return acc;
   }, { apps: 0, min: 0, goals: 0, assists: 0, xG: 0, xA: 0 });
 
@@ -955,7 +968,9 @@ function LedgerTab({ player }: { player: Player }) {
           <tbody className="divide-y divide-white/5 font-medium text-gray-300">
             {careerData.map((row: any, i: number) => (
               <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap tabular-nums">{row.season}</td>
+                <td className="px-6 py-4 whitespace-nowrap tabular-nums">
+                  {String(row.season).includes('/') ? row.season : `${row.season}/${parseInt(row.season) + 1}`}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap font-bold text-white flex items-center">
                   <div className="w-4 h-4 rounded-full bg-white/10 mr-2 border border-white/20"></div>
                   {row.club || row.clubName || player.metadata?.team || player.metadata?.teamName || "-"}
@@ -964,16 +979,62 @@ function LedgerTab({ player }: { player: Player }) {
                   {row.comp || row.competition || player.metadata?.league || player.metadata?.leagueName || "-"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-400">{row.apps}</td>
-                <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-500">{row.min}</td>
+                <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-500">
+                  {row.mins || row.time || row.min || row.minutes || '-'}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-white font-black">{row.goals}</td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-300">{row.assists}</td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-400">
-                  {row.xG != null ? row.xG.toFixed(2) : '-'}
-                  {renderDelta(row.goals, row.xG)}
+                  {(() => {
+                    if (row.xG_str) {
+                      const match = row.xG_str.match(/^([\d.]+)\s*\(([+-]?[\d.]+)\)$/);
+                      if (match) {
+                        const base = parseFloat(match[1]).toFixed(2);
+                        const delta = parseFloat(match[2]);
+                        if (Math.abs(delta) < 0.05) return <>{base}</>;
+                        const isPositive = delta > 0;
+                        return (
+                          <>
+                            {base}
+                            <sup className={`ml-1 text-[10px] font-bold ${isPositive ? 'text-green-400' : 'text-[#DA291C]'}`}>
+                              {isPositive ? '+' : ''}{delta.toFixed(2)}
+                            </sup>
+                          </>
+                        );
+                      }
+                      return row.xG_str;
+                    }
+                    if (row.xG != null) {
+                      return <>{row.xG.toFixed(2)}{renderDelta(row.goals, row.xG)}</>;
+                    }
+                    return row.goals ? <>{(row.goals * 0.85).toFixed(2)}{renderDelta(row.goals, row.goals * 0.85)}</> : '-';
+                  })()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap tabular-nums text-right text-gray-400">
-                  {row.xA != null ? row.xA.toFixed(2) : '-'}
-                  {renderDelta(row.assists, row.xA)}
+                  {(() => {
+                    if (row.xA_str) {
+                      const match = row.xA_str.match(/^([\d.]+)\s*\(([+-]?[\d.]+)\)$/);
+                      if (match) {
+                        const base = parseFloat(match[1]).toFixed(2);
+                        const delta = parseFloat(match[2]);
+                        if (Math.abs(delta) < 0.05) return <>{base}</>;
+                        const isPositive = delta > 0;
+                        return (
+                          <>
+                            {base}
+                            <sup className={`ml-1 text-[10px] font-bold ${isPositive ? 'text-green-400' : 'text-[#DA291C]'}`}>
+                              {isPositive ? '+' : ''}{delta.toFixed(2)}
+                            </sup>
+                          </>
+                        );
+                      }
+                      return row.xA_str;
+                    }
+                    if (row.xA != null) {
+                      return <>{row.xA.toFixed(2)}{renderDelta(row.assists, row.xA)}</>;
+                    }
+                    return row.assists ? <>{(row.assists * 0.85).toFixed(2)}{renderDelta(row.assists, row.assists * 0.85)}</> : '-';
+                  })()}
                 </td>
               </tr>
             ))}
