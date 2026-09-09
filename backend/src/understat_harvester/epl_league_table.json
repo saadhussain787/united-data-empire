@@ -1,0 +1,1742 @@
+{
+    "71": {
+        "id": "71",
+        "title": "Aston Villa",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 0.275249,
+                "xGA": 4.00327,
+                "npxG": 0.275249,
+                "npxGA": 4.00327,
+                "ppda": {
+                    "att": 355,
+                    "def": 11
+                },
+                "ppda_allowed": {
+                    "att": 127,
+                    "def": 34
+                },
+                "deep": 0,
+                "deep_allowed": 13,
+                "scored": 0,
+                "missed": 4,
+                "xpts": 0.010799999999999999,
+                "result": "l",
+                "date": "2026-08-23 13:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -3.7280209999999996
+            },
+            {
+                "h_a": "h",
+                "xG": 0.281925,
+                "xGA": 1.52441,
+                "npxG": 0.281925,
+                "npxGA": 1.52441,
+                "ppda": {
+                    "att": 300,
+                    "def": 16
+                },
+                "ppda_allowed": {
+                    "att": 169,
+                    "def": 17
+                },
+                "deep": 5,
+                "deep_allowed": 8,
+                "scored": 0,
+                "missed": 1,
+                "xpts": 0.207,
+                "result": "l",
+                "date": "2026-08-31 19:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -1.242485
+            },
+            {
+                "h_a": "a",
+                "xG": 1.63526,
+                "xGA": 0.812385,
+                "npxG": 1.63526,
+                "npxGA": 0.812385,
+                "ppda": {
+                    "att": 115,
+                    "def": 11
+                },
+                "ppda_allowed": {
+                    "att": 346,
+                    "def": 16
+                },
+                "deep": 7,
+                "deep_allowed": 3,
+                "scored": 0,
+                "missed": 0,
+                "xpts": 2.0337,
+                "result": "d",
+                "date": "2026-09-05 16:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.8228749999999999
+            }
+        ]
+    },
+    "72": {
+        "id": "72",
+        "title": "Everton",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 1.45085,
+                "xGA": 2.23095,
+                "npxG": 1.45085,
+                "npxGA": 2.23095,
+                "ppda": {
+                    "att": 337,
+                    "def": 15
+                },
+                "ppda_allowed": {
+                    "att": 199,
+                    "def": 28
+                },
+                "deep": 10,
+                "deep_allowed": 6,
+                "scored": 2,
+                "missed": 0,
+                "xpts": 0.7830999999999999,
+                "result": "w",
+                "date": "2026-08-22 14:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": -0.7801
+            },
+            {
+                "h_a": "a",
+                "xG": 1.66352,
+                "xGA": 2.25803,
+                "npxG": 1.66352,
+                "npxGA": 2.25803,
+                "ppda": {
+                    "att": 247,
+                    "def": 24
+                },
+                "ppda_allowed": {
+                    "att": 148,
+                    "def": 22
+                },
+                "deep": 4,
+                "deep_allowed": 10,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 0.9696,
+                "result": "d",
+                "date": "2026-08-29 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.5945100000000001
+            },
+            {
+                "h_a": "h",
+                "xG": 1.05629,
+                "xGA": 0.872225,
+                "npxG": 1.05629,
+                "npxGA": 0.872225,
+                "ppda": {
+                    "att": 305,
+                    "def": 23
+                },
+                "ppda_allowed": {
+                    "att": 222,
+                    "def": 14
+                },
+                "deep": 7,
+                "deep_allowed": 7,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 1.4874,
+                "result": "d",
+                "date": "2026-09-06 13:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.18406499999999992
+            }
+        ]
+    },
+    "73": {
+        "id": "73",
+        "title": "Bournemouth",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 0.707541,
+                "xGA": 2.47444,
+                "npxG": 0.707541,
+                "npxGA": 2.47444,
+                "ppda": {
+                    "att": 340,
+                    "def": 19
+                },
+                "ppda_allowed": {
+                    "att": 190,
+                    "def": 25
+                },
+                "deep": 1,
+                "deep_allowed": 14,
+                "scored": 1,
+                "missed": 2,
+                "xpts": 0.28750000000000003,
+                "result": "l",
+                "date": "2026-08-23 13:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -1.766899
+            },
+            {
+                "h_a": "h",
+                "xG": 2.25803,
+                "xGA": 1.66352,
+                "npxG": 2.25803,
+                "npxGA": 1.66352,
+                "ppda": {
+                    "att": 148,
+                    "def": 22
+                },
+                "ppda_allowed": {
+                    "att": 247,
+                    "def": 24
+                },
+                "deep": 10,
+                "deep_allowed": 4,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 1.7945999999999998,
+                "result": "d",
+                "date": "2026-08-29 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.5945100000000001
+            },
+            {
+                "h_a": "a",
+                "xG": 1.63891,
+                "xGA": 0.771636,
+                "npxG": 1.63891,
+                "npxGA": 0.771636,
+                "ppda": {
+                    "att": 270,
+                    "def": 27
+                },
+                "ppda_allowed": {
+                    "att": 157,
+                    "def": 23
+                },
+                "deep": 3,
+                "deep_allowed": 8,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 2.0734,
+                "result": "d",
+                "date": "2026-09-05 11:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.8672740000000001
+            }
+        ]
+    },
+    "77": {
+        "id": "77",
+        "title": "Sunderland",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 1.17743,
+                "xGA": 1.58452,
+                "npxG": 1.17743,
+                "npxGA": 1.58452,
+                "ppda": {
+                    "att": 173,
+                    "def": 26
+                },
+                "ppda_allowed": {
+                    "att": 351,
+                    "def": 29
+                },
+                "deep": 6,
+                "deep_allowed": 4,
+                "scored": 1,
+                "missed": 2,
+                "xpts": 0.99,
+                "result": "l",
+                "date": "2026-08-22 14:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -0.40708999999999995
+            },
+            {
+                "h_a": "h",
+                "xG": 1.56229,
+                "xGA": 1.02405,
+                "npxG": 1.56229,
+                "npxGA": 1.02405,
+                "ppda": {
+                    "att": 311,
+                    "def": 20
+                },
+                "ppda_allowed": {
+                    "att": 223,
+                    "def": 28
+                },
+                "deep": 5,
+                "deep_allowed": 6,
+                "scored": 1,
+                "missed": 0,
+                "xpts": 1.8239999999999998,
+                "result": "w",
+                "date": "2026-08-30 13:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 0.53824
+            },
+            {
+                "h_a": "a",
+                "xG": 2.15489,
+                "xGA": 1.58584,
+                "npxG": 1.39373,
+                "npxGA": 1.58584,
+                "ppda": {
+                    "att": 183,
+                    "def": 24
+                },
+                "ppda_allowed": {
+                    "att": 188,
+                    "def": 23
+                },
+                "deep": 13,
+                "deep_allowed": 5,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 1.8044,
+                "result": "d",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.19211
+            }
+        ]
+    },
+    "78": {
+        "id": "78",
+        "title": "Crystal Palace",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 2.23095,
+                "xGA": 1.45085,
+                "npxG": 2.23095,
+                "npxGA": 1.45085,
+                "ppda": {
+                    "att": 199,
+                    "def": 28
+                },
+                "ppda_allowed": {
+                    "att": 337,
+                    "def": 15
+                },
+                "deep": 6,
+                "deep_allowed": 10,
+                "scored": 0,
+                "missed": 2,
+                "xpts": 1.9875999999999998,
+                "result": "l",
+                "date": "2026-08-22 14:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": 0.7801
+            },
+            {
+                "h_a": "h",
+                "xG": 0.926624,
+                "xGA": 2.56662,
+                "npxG": 0.926624,
+                "npxGA": 2.56662,
+                "ppda": {
+                    "att": 470,
+                    "def": 21
+                },
+                "ppda_allowed": {
+                    "att": 191,
+                    "def": 26
+                },
+                "deep": 3,
+                "deep_allowed": 11,
+                "scored": 1,
+                "missed": 4,
+                "xpts": 0.3888,
+                "result": "l",
+                "date": "2026-08-28 19:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -1.639996
+            },
+            {
+                "h_a": "a",
+                "xG": 2.35981,
+                "xGA": 2.88274,
+                "npxG": 2.35981,
+                "npxGA": 2.88274,
+                "ppda": {
+                    "att": 424,
+                    "def": 16
+                },
+                "ppda_allowed": {
+                    "att": 221,
+                    "def": 16
+                },
+                "deep": 4,
+                "deep_allowed": 24,
+                "scored": 3,
+                "missed": 2,
+                "xpts": 1.0788,
+                "result": "w",
+                "date": "2026-09-05 14:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": -0.5229300000000001
+            }
+        ]
+    },
+    "80": {
+        "id": "80",
+        "title": "Chelsea",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 2.58384,
+                "xGA": 1.41707,
+                "npxG": 2.58384,
+                "npxGA": 1.41707,
+                "ppda": {
+                    "att": 361,
+                    "def": 19
+                },
+                "ppda_allowed": {
+                    "att": 195,
+                    "def": 24
+                },
+                "deep": 10,
+                "deep_allowed": 5,
+                "scored": 3,
+                "missed": 2,
+                "xpts": 2.1868000000000003,
+                "result": "w",
+                "date": "2026-08-24 19:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 1.1667699999999999
+            },
+            {
+                "h_a": "h",
+                "xG": 3.8289,
+                "xGA": 1.79173,
+                "npxG": 3.8289,
+                "npxGA": 1.79173,
+                "ppda": {
+                    "att": 410,
+                    "def": 15
+                },
+                "ppda_allowed": {
+                    "att": 91,
+                    "def": 21
+                },
+                "deep": 13,
+                "deep_allowed": 5,
+                "scored": 4,
+                "missed": 3,
+                "xpts": 2.5465,
+                "result": "w",
+                "date": "2026-08-30 13:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 2.0371699999999997
+            },
+            {
+                "h_a": "a",
+                "xG": 0.430508,
+                "xGA": 2.80555,
+                "npxG": 0.430508,
+                "npxGA": 2.80555,
+                "ppda": {
+                    "att": 177,
+                    "def": 18
+                },
+                "ppda_allowed": {
+                    "att": 187,
+                    "def": 21
+                },
+                "deep": 5,
+                "deep_allowed": 17,
+                "scored": 1,
+                "missed": 2,
+                "xpts": 0.1328,
+                "result": "l",
+                "date": "2026-09-06 15:30:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -2.375042
+            }
+        ]
+    },
+    "82": {
+        "id": "82",
+        "title": "Tottenham",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 0.756284,
+                "xGA": 4.04155,
+                "npxG": 0.756284,
+                "npxGA": 3.28038,
+                "ppda": {
+                    "att": 205,
+                    "def": 26
+                },
+                "ppda_allowed": {
+                    "att": 253,
+                    "def": 31
+                },
+                "deep": 7,
+                "deep_allowed": 13,
+                "scored": 0,
+                "missed": 3,
+                "xpts": 0.064,
+                "result": "l",
+                "date": "2026-08-22 16:30:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -2.524096
+            },
+            {
+                "h_a": "h",
+                "xG": 1.12037,
+                "xGA": 1.00952,
+                "npxG": 1.12037,
+                "npxGA": 1.00952,
+                "ppda": {
+                    "att": 218,
+                    "def": 22
+                },
+                "ppda_allowed": {
+                    "att": 270,
+                    "def": 14
+                },
+                "deep": 7,
+                "deep_allowed": 8,
+                "scored": 0,
+                "missed": 2,
+                "xpts": 1.4016,
+                "result": "l",
+                "date": "2026-08-29 16:30:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": 0.11085000000000012
+            },
+            {
+                "h_a": "a",
+                "xG": 1.48446,
+                "xGA": 0.831692,
+                "npxG": 1.48446,
+                "npxGA": 0.831692,
+                "ppda": {
+                    "att": 172,
+                    "def": 19
+                },
+                "ppda_allowed": {
+                    "att": 273,
+                    "def": 36
+                },
+                "deep": 3,
+                "deep_allowed": 6,
+                "scored": 0,
+                "missed": 0,
+                "xpts": 1.9277000000000002,
+                "result": "d",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.6527679999999999
+            }
+        ]
+    },
+    "83": {
+        "id": "83",
+        "title": "Arsenal",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 1.85424,
+                "xGA": 0.558336,
+                "npxG": 1.85424,
+                "npxGA": 0.558336,
+                "ppda": {
+                    "att": 164,
+                    "def": 17
+                },
+                "ppda_allowed": {
+                    "att": 327,
+                    "def": 12
+                },
+                "deep": 18,
+                "deep_allowed": 2,
+                "scored": 3,
+                "missed": 0,
+                "xpts": 2.3738,
+                "result": "w",
+                "date": "2026-08-21 19:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 1.2959040000000002
+            },
+            {
+                "h_a": "a",
+                "xG": 1.52441,
+                "xGA": 0.281925,
+                "npxG": 1.52441,
+                "npxGA": 0.281925,
+                "ppda": {
+                    "att": 169,
+                    "def": 17
+                },
+                "ppda_allowed": {
+                    "att": 300,
+                    "def": 16
+                },
+                "deep": 8,
+                "deep_allowed": 5,
+                "scored": 1,
+                "missed": 0,
+                "xpts": 2.6457,
+                "result": "w",
+                "date": "2026-08-31 19:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 1.242485
+            },
+            {
+                "h_a": "h",
+                "xG": 2.80555,
+                "xGA": 0.430508,
+                "npxG": 2.80555,
+                "npxGA": 0.430508,
+                "ppda": {
+                    "att": 187,
+                    "def": 21
+                },
+                "ppda_allowed": {
+                    "att": 177,
+                    "def": 18
+                },
+                "deep": 17,
+                "deep_allowed": 5,
+                "scored": 2,
+                "missed": 1,
+                "xpts": 2.7935,
+                "result": "w",
+                "date": "2026-09-06 15:30:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 2.375042
+            }
+        ]
+    },
+    "86": {
+        "id": "86",
+        "title": "Newcastle United",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 1.59465,
+                "xGA": 3.13133,
+                "npxG": 1.59465,
+                "npxGA": 2.37016,
+                "ppda": {
+                    "att": 193,
+                    "def": 22
+                },
+                "ppda_allowed": {
+                    "att": 165,
+                    "def": 29
+                },
+                "deep": 3,
+                "deep_allowed": 4,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 0.4379,
+                "result": "d",
+                "date": "2026-08-23 15:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.7755099999999999
+            },
+            {
+                "h_a": "a",
+                "xG": 1.00952,
+                "xGA": 1.12037,
+                "npxG": 1.00952,
+                "npxGA": 1.12037,
+                "ppda": {
+                    "att": 270,
+                    "def": 14
+                },
+                "ppda_allowed": {
+                    "att": 218,
+                    "def": 22
+                },
+                "deep": 8,
+                "deep_allowed": 7,
+                "scored": 2,
+                "missed": 0,
+                "xpts": 1.2813,
+                "result": "w",
+                "date": "2026-08-29 16:30:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": -0.11085000000000012
+            },
+            {
+                "h_a": "h",
+                "xG": 0.771636,
+                "xGA": 1.63891,
+                "npxG": 0.771636,
+                "npxGA": 1.63891,
+                "ppda": {
+                    "att": 157,
+                    "def": 23
+                },
+                "ppda_allowed": {
+                    "att": 270,
+                    "def": 27
+                },
+                "deep": 8,
+                "deep_allowed": 3,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 0.6634,
+                "result": "d",
+                "date": "2026-09-05 11:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.8672740000000001
+            }
+        ]
+    },
+    "87": {
+        "id": "87",
+        "title": "Liverpool",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 3.13133,
+                "xGA": 1.59465,
+                "npxG": 2.37016,
+                "npxGA": 1.59465,
+                "ppda": {
+                    "att": 165,
+                    "def": 29
+                },
+                "ppda_allowed": {
+                    "att": 193,
+                    "def": 22
+                },
+                "deep": 4,
+                "deep_allowed": 3,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 2.4082999999999997,
+                "result": "d",
+                "date": "2026-08-23 15:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.7755099999999999
+            },
+            {
+                "h_a": "h",
+                "xG": 1.27921,
+                "xGA": 2.87937,
+                "npxG": 1.27921,
+                "npxGA": 2.1182,
+                "ppda": {
+                    "att": 135,
+                    "def": 34
+                },
+                "ppda_allowed": {
+                    "att": 335,
+                    "def": 16
+                },
+                "deep": 4,
+                "deep_allowed": 6,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 0.36850000000000005,
+                "result": "d",
+                "date": "2026-08-29 11:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.8389899999999999
+            },
+            {
+                "h_a": "a",
+                "xG": 0.744139,
+                "xGA": 0.597972,
+                "npxG": 0.744139,
+                "npxGA": 0.597972,
+                "ppda": {
+                    "att": 271,
+                    "def": 21
+                },
+                "ppda_allowed": {
+                    "att": 299,
+                    "def": 20
+                },
+                "deep": 6,
+                "deep_allowed": 5,
+                "scored": 2,
+                "missed": 0,
+                "xpts": 1.4679,
+                "result": "w",
+                "date": "2026-09-04 19:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 0.14616700000000005
+            }
+        ]
+    },
+    "88": {
+        "id": "88",
+        "title": "Manchester City",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 2.47444,
+                "xGA": 0.707541,
+                "npxG": 2.47444,
+                "npxGA": 0.707541,
+                "ppda": {
+                    "att": 190,
+                    "def": 25
+                },
+                "ppda_allowed": {
+                    "att": 340,
+                    "def": 19
+                },
+                "deep": 14,
+                "deep_allowed": 1,
+                "scored": 2,
+                "missed": 1,
+                "xpts": 2.575,
+                "result": "w",
+                "date": "2026-08-23 13:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 1.766899
+            },
+            {
+                "h_a": "a",
+                "xG": 2.56662,
+                "xGA": 0.926624,
+                "npxG": 2.56662,
+                "npxGA": 0.926624,
+                "ppda": {
+                    "att": 191,
+                    "def": 26
+                },
+                "ppda_allowed": {
+                    "att": 470,
+                    "def": 21
+                },
+                "deep": 11,
+                "deep_allowed": 3,
+                "scored": 4,
+                "missed": 1,
+                "xpts": 2.4576000000000002,
+                "result": "w",
+                "date": "2026-08-28 19:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 1.639996
+            },
+            {
+                "h_a": "h",
+                "xG": 2.19038,
+                "xGA": 1.49306,
+                "npxG": 2.19038,
+                "npxGA": 1.49306,
+                "ppda": {
+                    "att": 102,
+                    "def": 17
+                },
+                "ppda_allowed": {
+                    "att": 487,
+                    "def": 30
+                },
+                "deep": 6,
+                "deep_allowed": 2,
+                "scored": 1,
+                "missed": 0,
+                "xpts": 1.8813,
+                "result": "w",
+                "date": "2026-09-05 14:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 0.6973200000000002
+            }
+        ]
+    },
+    "89": {
+        "id": "89",
+        "title": "Manchester United",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 1.77874,
+                "xGA": 1.49627,
+                "npxG": 1.77874,
+                "npxGA": 1.49627,
+                "ppda": {
+                    "att": 145,
+                    "def": 14
+                },
+                "ppda_allowed": {
+                    "att": 288,
+                    "def": 14
+                },
+                "deep": 11,
+                "deep_allowed": 1,
+                "scored": 0,
+                "missed": 2,
+                "xpts": 1.5478,
+                "result": "l",
+                "date": "2026-08-22 11:30:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": 0.28247
+            },
+            {
+                "h_a": "h",
+                "xG": 4.86612,
+                "xGA": 1.80548,
+                "npxG": 4.10495,
+                "npxGA": 1.80548,
+                "ppda": {
+                    "att": 226,
+                    "def": 22
+                },
+                "ppda_allowed": {
+                    "att": 301,
+                    "def": 22
+                },
+                "deep": 11,
+                "deep_allowed": 3,
+                "scored": 5,
+                "missed": 2,
+                "xpts": 2.8193,
+                "result": "w",
+                "date": "2026-08-30 15:30:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 2.2994699999999995
+            },
+            {
+                "h_a": "a",
+                "xG": 0.872225,
+                "xGA": 1.05629,
+                "npxG": 0.872225,
+                "npxGA": 1.05629,
+                "ppda": {
+                    "att": 222,
+                    "def": 14
+                },
+                "ppda_allowed": {
+                    "att": 305,
+                    "def": 23
+                },
+                "deep": 7,
+                "deep_allowed": 7,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 1.1888999999999998,
+                "result": "d",
+                "date": "2026-09-06 13:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.18406499999999992
+            }
+        ]
+    },
+    "91": {
+        "id": "91",
+        "title": "Hull",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 1.49627,
+                "xGA": 1.77874,
+                "npxG": 1.49627,
+                "npxGA": 1.77874,
+                "ppda": {
+                    "att": 288,
+                    "def": 14
+                },
+                "ppda_allowed": {
+                    "att": 145,
+                    "def": 14
+                },
+                "deep": 1,
+                "deep_allowed": 11,
+                "scored": 2,
+                "missed": 0,
+                "xpts": 1.1638,
+                "result": "w",
+                "date": "2026-08-22 11:30:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": -0.28247
+            },
+            {
+                "h_a": "a",
+                "xG": 0.459726,
+                "xGA": 1.18233,
+                "npxG": 0.459726,
+                "npxGA": 1.18233,
+                "ppda": {
+                    "att": 333,
+                    "def": 20
+                },
+                "ppda_allowed": {
+                    "att": 131,
+                    "def": 15
+                },
+                "deep": 3,
+                "deep_allowed": 4,
+                "scored": 1,
+                "missed": 0,
+                "xpts": 0.6444000000000001,
+                "result": "w",
+                "date": "2026-08-29 14:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": -0.722604
+            },
+            {
+                "h_a": "h",
+                "xG": 0.812385,
+                "xGA": 1.63526,
+                "npxG": 0.812385,
+                "npxGA": 1.63526,
+                "ppda": {
+                    "att": 346,
+                    "def": 16
+                },
+                "ppda_allowed": {
+                    "att": 115,
+                    "def": 11
+                },
+                "deep": 3,
+                "deep_allowed": 7,
+                "scored": 0,
+                "missed": 0,
+                "xpts": 0.7068000000000001,
+                "result": "d",
+                "date": "2026-09-05 16:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.8228749999999999
+            }
+        ]
+    },
+    "220": {
+        "id": "220",
+        "title": "Brighton",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 4.00327,
+                "xGA": 0.275249,
+                "npxG": 4.00327,
+                "npxGA": 0.275249,
+                "ppda": {
+                    "att": 127,
+                    "def": 34
+                },
+                "ppda_allowed": {
+                    "att": 355,
+                    "def": 11
+                },
+                "deep": 13,
+                "deep_allowed": 0,
+                "scored": 4,
+                "missed": 0,
+                "xpts": 2.9799,
+                "result": "w",
+                "date": "2026-08-23 13:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 3.7280209999999996
+            },
+            {
+                "h_a": "a",
+                "xG": 1.79173,
+                "xGA": 3.8289,
+                "npxG": 1.79173,
+                "npxGA": 3.8289,
+                "ppda": {
+                    "att": 91,
+                    "def": 21
+                },
+                "ppda_allowed": {
+                    "att": 410,
+                    "def": 15
+                },
+                "deep": 5,
+                "deep_allowed": 13,
+                "scored": 3,
+                "missed": 4,
+                "xpts": 0.3367,
+                "result": "l",
+                "date": "2026-08-30 13:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -2.0371699999999997
+            },
+            {
+                "h_a": "h",
+                "xG": 2.22026,
+                "xGA": 2.23407,
+                "npxG": 2.22026,
+                "npxGA": 2.23407,
+                "ppda": {
+                    "att": 113,
+                    "def": 26
+                },
+                "ppda_allowed": {
+                    "att": 282,
+                    "def": 22
+                },
+                "deep": 6,
+                "deep_allowed": 8,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 1.338,
+                "result": "d",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.013809999999999878
+            }
+        ]
+    },
+    "228": {
+        "id": "228",
+        "title": "Fulham",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 1.41707,
+                "xGA": 2.58384,
+                "npxG": 1.41707,
+                "npxGA": 2.58384,
+                "ppda": {
+                    "att": 195,
+                    "def": 24
+                },
+                "ppda_allowed": {
+                    "att": 361,
+                    "def": 19
+                },
+                "deep": 5,
+                "deep_allowed": 10,
+                "scored": 2,
+                "missed": 3,
+                "xpts": 0.6187,
+                "result": "l",
+                "date": "2026-08-24 19:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -1.1667699999999999
+            },
+            {
+                "h_a": "a",
+                "xG": 1.02405,
+                "xGA": 1.56229,
+                "npxG": 1.02405,
+                "npxGA": 1.56229,
+                "ppda": {
+                    "att": 223,
+                    "def": 28
+                },
+                "ppda_allowed": {
+                    "att": 311,
+                    "def": 20
+                },
+                "deep": 6,
+                "deep_allowed": 5,
+                "scored": 0,
+                "missed": 1,
+                "xpts": 0.9077999999999999,
+                "result": "l",
+                "date": "2026-08-30 13:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -0.53824
+            },
+            {
+                "h_a": "h",
+                "xG": 2.88274,
+                "xGA": 2.35981,
+                "npxG": 2.88274,
+                "npxGA": 2.35981,
+                "ppda": {
+                    "att": 221,
+                    "def": 16
+                },
+                "ppda_allowed": {
+                    "att": 424,
+                    "def": 16
+                },
+                "deep": 24,
+                "deep_allowed": 4,
+                "scored": 2,
+                "missed": 3,
+                "xpts": 1.7090999999999998,
+                "result": "l",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": 0.5229300000000001
+            }
+        ]
+    },
+    "244": {
+        "id": "244",
+        "title": "Brentford",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 4.04155,
+                "xGA": 0.756284,
+                "npxG": 3.28038,
+                "npxGA": 0.756284,
+                "ppda": {
+                    "att": 253,
+                    "def": 31
+                },
+                "ppda_allowed": {
+                    "att": 205,
+                    "def": 26
+                },
+                "deep": 13,
+                "deep_allowed": 7,
+                "scored": 3,
+                "missed": 0,
+                "xpts": 2.9014,
+                "result": "w",
+                "date": "2026-08-22 16:30:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 2.524096
+            },
+            {
+                "h_a": "a",
+                "xG": 1.61344,
+                "xGA": 1.14993,
+                "npxG": 1.61344,
+                "npxGA": 1.14993,
+                "ppda": {
+                    "att": 207,
+                    "def": 30
+                },
+                "ppda_allowed": {
+                    "att": 201,
+                    "def": 16
+                },
+                "deep": 5,
+                "deep_allowed": 1,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 1.7052,
+                "result": "d",
+                "date": "2026-08-30 13:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.4635100000000001
+            },
+            {
+                "h_a": "h",
+                "xG": 1.58584,
+                "xGA": 2.15489,
+                "npxG": 1.58584,
+                "npxGA": 1.39373,
+                "ppda": {
+                    "att": 188,
+                    "def": 23
+                },
+                "ppda_allowed": {
+                    "att": 183,
+                    "def": 24
+                },
+                "deep": 5,
+                "deep_allowed": 13,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 0.9575,
+                "result": "d",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.19211
+            }
+        ]
+    },
+    "245": {
+        "id": "245",
+        "title": "Leeds",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 0.466247,
+                "xGA": 0.656681,
+                "npxG": 0.466247,
+                "npxGA": 0.656681,
+                "ppda": {
+                    "att": 201,
+                    "def": 32
+                },
+                "ppda_allowed": {
+                    "att": 179,
+                    "def": 19
+                },
+                "deep": 2,
+                "deep_allowed": 6,
+                "scored": 1,
+                "missed": 0,
+                "xpts": 1.0787,
+                "result": "w",
+                "date": "2026-08-22 14:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": -0.19043399999999994
+            },
+            {
+                "h_a": "h",
+                "xG": 1.14993,
+                "xGA": 1.61344,
+                "npxG": 1.14993,
+                "npxGA": 1.61344,
+                "ppda": {
+                    "att": 201,
+                    "def": 16
+                },
+                "ppda_allowed": {
+                    "att": 207,
+                    "def": 30
+                },
+                "deep": 1,
+                "deep_allowed": 5,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 0.9771,
+                "result": "d",
+                "date": "2026-08-30 13:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.4635100000000001
+            },
+            {
+                "h_a": "a",
+                "xG": 2.23407,
+                "xGA": 2.22026,
+                "npxG": 2.23407,
+                "npxGA": 2.22026,
+                "ppda": {
+                    "att": 282,
+                    "def": 22
+                },
+                "ppda_allowed": {
+                    "att": 113,
+                    "def": 26
+                },
+                "deep": 8,
+                "deep_allowed": 6,
+                "scored": 1,
+                "missed": 1,
+                "xpts": 1.3884,
+                "result": "d",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.013809999999999878
+            }
+        ]
+    },
+    "249": {
+        "id": "249",
+        "title": "Nottingham Forest",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 0.656681,
+                "xGA": 0.466247,
+                "npxG": 0.656681,
+                "npxGA": 0.466247,
+                "ppda": {
+                    "att": 179,
+                    "def": 19
+                },
+                "ppda_allowed": {
+                    "att": 201,
+                    "def": 32
+                },
+                "deep": 6,
+                "deep_allowed": 2,
+                "scored": 0,
+                "missed": 1,
+                "xpts": 1.5032,
+                "result": "l",
+                "date": "2026-08-22 14:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": 0.19043399999999994
+            },
+            {
+                "h_a": "a",
+                "xG": 2.87937,
+                "xGA": 1.27921,
+                "npxG": 2.1182,
+                "npxGA": 1.27921,
+                "ppda": {
+                    "att": 335,
+                    "def": 16
+                },
+                "ppda_allowed": {
+                    "att": 135,
+                    "def": 34
+                },
+                "deep": 6,
+                "deep_allowed": 4,
+                "scored": 2,
+                "missed": 2,
+                "xpts": 2.4799,
+                "result": "d",
+                "date": "2026-08-29 11:30:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": 0.8389899999999999
+            },
+            {
+                "h_a": "h",
+                "xG": 0.831692,
+                "xGA": 1.48446,
+                "npxG": 0.831692,
+                "npxGA": 1.48446,
+                "ppda": {
+                    "att": 273,
+                    "def": 36
+                },
+                "ppda_allowed": {
+                    "att": 172,
+                    "def": 19
+                },
+                "deep": 6,
+                "deep_allowed": 3,
+                "scored": 0,
+                "missed": 0,
+                "xpts": 0.8054,
+                "result": "d",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 1,
+                "loses": 0,
+                "pts": 1,
+                "npxGD": -0.6527679999999999
+            }
+        ]
+    },
+    "285": {
+        "id": "285",
+        "title": "Ipswich",
+        "history": [
+            {
+                "h_a": "h",
+                "xG": 1.58452,
+                "xGA": 1.17743,
+                "npxG": 1.58452,
+                "npxGA": 1.17743,
+                "ppda": {
+                    "att": 351,
+                    "def": 29
+                },
+                "ppda_allowed": {
+                    "att": 173,
+                    "def": 26
+                },
+                "deep": 4,
+                "deep_allowed": 6,
+                "scored": 2,
+                "missed": 1,
+                "xpts": 1.7238,
+                "result": "w",
+                "date": "2026-08-22 14:00:00",
+                "wins": 1,
+                "draws": 0,
+                "loses": 0,
+                "pts": 3,
+                "npxGD": 0.40708999999999995
+            },
+            {
+                "h_a": "a",
+                "xG": 1.80548,
+                "xGA": 4.86612,
+                "npxG": 1.80548,
+                "npxGA": 4.10495,
+                "ppda": {
+                    "att": 301,
+                    "def": 22
+                },
+                "ppda_allowed": {
+                    "att": 226,
+                    "def": 22
+                },
+                "deep": 3,
+                "deep_allowed": 11,
+                "scored": 2,
+                "missed": 5,
+                "xpts": 0.1226,
+                "result": "l",
+                "date": "2026-08-30 15:30:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -2.2994699999999995
+            },
+            {
+                "h_a": "h",
+                "xG": 0.597972,
+                "xGA": 0.744139,
+                "npxG": 0.597972,
+                "npxGA": 0.744139,
+                "ppda": {
+                    "att": 299,
+                    "def": 20
+                },
+                "ppda_allowed": {
+                    "att": 271,
+                    "def": 21
+                },
+                "deep": 5,
+                "deep_allowed": 6,
+                "scored": 0,
+                "missed": 2,
+                "xpts": 1.1409,
+                "result": "l",
+                "date": "2026-09-04 19:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -0.14616700000000005
+            }
+        ]
+    },
+    "294": {
+        "id": "294",
+        "title": "Coventry",
+        "history": [
+            {
+                "h_a": "a",
+                "xG": 0.558336,
+                "xGA": 1.85424,
+                "npxG": 0.558336,
+                "npxGA": 1.85424,
+                "ppda": {
+                    "att": 327,
+                    "def": 12
+                },
+                "ppda_allowed": {
+                    "att": 164,
+                    "def": 17
+                },
+                "deep": 2,
+                "deep_allowed": 18,
+                "scored": 0,
+                "missed": 3,
+                "xpts": 0.4106,
+                "result": "l",
+                "date": "2026-08-21 19:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -1.2959040000000002
+            },
+            {
+                "h_a": "h",
+                "xG": 1.18233,
+                "xGA": 0.459726,
+                "npxG": 1.18233,
+                "npxGA": 0.459726,
+                "ppda": {
+                    "att": 131,
+                    "def": 15
+                },
+                "ppda_allowed": {
+                    "att": 333,
+                    "def": 20
+                },
+                "deep": 4,
+                "deep_allowed": 3,
+                "scored": 0,
+                "missed": 1,
+                "xpts": 2.0532,
+                "result": "l",
+                "date": "2026-08-29 14:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": 0.722604
+            },
+            {
+                "h_a": "a",
+                "xG": 1.49306,
+                "xGA": 2.19038,
+                "npxG": 1.49306,
+                "npxGA": 2.19038,
+                "ppda": {
+                    "att": 487,
+                    "def": 30
+                },
+                "ppda_allowed": {
+                    "att": 102,
+                    "def": 17
+                },
+                "deep": 2,
+                "deep_allowed": 6,
+                "scored": 0,
+                "missed": 1,
+                "xpts": 0.8841,
+                "result": "l",
+                "date": "2026-09-05 14:00:00",
+                "wins": 0,
+                "draws": 0,
+                "loses": 1,
+                "pts": 0,
+                "npxGD": -0.6973200000000002
+            }
+        ]
+    }
+}

@@ -17,7 +17,7 @@ const NAV_LINKS: NavItem[] = [
   { label: "Fixtures & Results", href: "/fixtures" },
   { label: "Tables", href: "/tables" },
   { label: "First Team Squad", href: "/squad" },
-  { label: "Stats Matrix", href: "/stats" },
+  { label: "Analytics", href: "/analytics" },
   { label: "History & Legends", href: "/history", badge: "1878" },
 ];
 
