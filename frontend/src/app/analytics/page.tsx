@@ -139,7 +139,7 @@ export default function AnalyticsPage() {
   const unitedDelta = unitedGoals - unitedXG;
 
   return (
-    <div className="min-h-screen bg-[#08090d] text-white p-8">
+    <div className="min-h-screen bg-transparent text-white p-8">
       <div className="mb-8">
         <span className="text-[#D4AF37] text-xs font-bold tracking-widest border border-[#D4AF37]/30 px-3 py-1 rounded-full">
           PILLAR 4 • MONEYBALL INTELLIGENCE

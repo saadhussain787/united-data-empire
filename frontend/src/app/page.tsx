@@ -60,7 +60,7 @@ export default async function HomePage() {
   const isFinished = headlineMatch && ['FT', 'AET', 'PEN'].includes(headlineMatch.status);
 
   return (
-    <main className="min-h-screen bg-[#0B0E14] text-white p-6 md:p-12 space-y-12">
+    <main className="min-h-screen bg-transparent text-white p-6 md:p-12 space-y-12">
       <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Hero Section */}

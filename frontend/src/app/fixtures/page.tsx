@@ -117,11 +117,11 @@ export default function FixturesPage() {
     });
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-white font-sans selection:bg-[#DA291C] selection:text-white">
+    <div className="min-h-screen bg-transparent text-white font-sans selection:bg-[#DA291C] selection:text-white">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header Ribbon */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/10 pb-6 mb-8 gap-4">
-          <div>
+        <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-5xl mx-auto mb-8 gap-6 border-b border-white/10 pb-6">
+          <div className="mt-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="h-2.5 w-2.5 rounded-full bg-[#DA291C] animate-pulse" />
               <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-semibold">
@@ -133,20 +133,30 @@ export default function FixturesPage() {
             </h1>
           </div>
 
-          <div className="flex items-center bg-[#151A22] p-1.5 rounded-xl border border-white/5 shadow-inner">
-            {(["ALL", "FT", "SCHEDULED"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setFilter(tab)}
-                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
-                  filter === tab
-                    ? "bg-[#DA291C] text-white shadow-lg shadow-[#DA291C]/30"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {tab === "ALL" ? "All Fixtures" : tab === "FT" ? "Results" : "Upcoming"}
-              </button>
-            ))}
+          <div className="inline-flex p-1.5 bg-white/[0.04] border border-white/10 rounded-2xl backdrop-blur-md gap-2">
+            {(["ALL", "FT", "SCHEDULED"] as const).map((tab) => {
+              const isActive = filter === tab;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setFilter(tab)}
+                  className={`relative px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl transition-colors z-10 ${
+                    isActive ? "text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="fixturesTabGlow"
+                      className="absolute inset-0 bg-gradient-to-r from-red-600/50 to-amber-500/30 border border-[#D4AF37]/40 rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.3)]"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">
+                    {tab === "ALL" ? "All Fixtures" : tab === "FT" ? "Results" : "Upcoming"}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -157,11 +167,11 @@ export default function FixturesPage() {
             <p className="text-sm tracking-widest uppercase text-gray-400">Loading Tactical Vault...</p>
           </div>
         ) : filteredMatches.length === 0 ? (
-          <div className="bg-[#151A22] border border-white/5 rounded-2xl p-12 text-center">
+          <div className="w-full max-w-5xl mx-auto bg-[#151A22] border border-white/5 rounded-2xl p-12 text-center relative z-10">
             <p className="text-gray-400 text-sm">No matches found in this category.</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="w-full max-w-5xl mx-auto flex flex-col gap-4 relative z-10">
             <AnimatePresence>
               {filteredMatches.map((match) => {
                 const homeStats = match.teamStats?.[String(match.homeTeamId)] || {};

@@ -1,9 +1,9 @@
-// FILE: frontend/src/components/Navbar.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 export interface NavItem {
   label: string;
@@ -18,21 +18,40 @@ const NAV_LINKS: NavItem[] = [
   { label: "Tables", href: "/tables" },
   { label: "First Team Squad", href: "/squad" },
   { label: "Analytics", href: "/analytics" },
-  { label: "History & Legends", href: "/history", badge: "1878" },
+  { label: "History & Legends", href: "/history" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hoveredPath, setHoveredPath] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-brand-carbon/95 backdrop-blur-md border-b border-brand-border">
-      {/* Top Heritage Ribbon */}
-      <div className="h-1 w-full bg-gradient-to-r from-brand-crimson via-brand-red to-brand-gold" />
+    <header 
+      className={`fixed z-50 transition-all duration-500 ${
+        isScrolled 
+          ? "top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl bg-[#08090d]/80 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl py-2" 
+          : "top-0 left-0 w-full bg-transparent py-4"
+      }`}
+    >
+      {/* Top Heritage Ribbon - Hidden when scrolled */}
+      {!isScrolled && <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-brand-crimson via-brand-red to-brand-gold" />}
+      
+      {/* Micro-Border Light Catcher */}
+      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo / Badge */}
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Left: Brand Logo / Badge */}
+        <div className="flex-shrink-0 flex items-center">
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-crimson to-brand-red flex items-center justify-center shadow-lg border border-brand-red/40 group-hover:scale-105 transition-transform">
               <span className="font-display text-xl font-bold text-white tracking-tighter">
@@ -48,37 +67,43 @@ export default function Navbar() {
               </span>
             </div>
           </Link>
+        </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
+        {/* Center: Desktop Navigation Links */}
+        <nav className="hidden md:flex flex-1 justify-center items-center gap-1 lg:gap-2" onMouseLeave={() => setHoveredPath(null)}>
+          {NAV_LINKS.map((link) => {
+            const isActive = pathname === link.href;
+            const showPill = hoveredPath ? hoveredPath === link.href : isActive;
 
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
-                    isActive
-                      ? "text-white bg-brand-slate border border-brand-border shadow-inner"
-                      : "text-gray-400 hover:text-white hover:bg-brand-carbon/60"
-                  }`}
-                >
-                  <span className="flex items-center space-x-1.5">
-                    <span>{link.label}</span>
-                    {link.badge && (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 bg-brand-gold/15 text-brand-gold rounded border border-brand-gold/30">
-                        {link.badge}
-                      </span>
-                    )}
-                  </span>
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-brand-red rounded-full shadow-[0_0_8px_#DA291C]" />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onMouseEnter={() => setHoveredPath(link.href)}
+                className={`relative px-4 py-2 rounded-full text-[13px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-200`}
+              >
+                {showPill && (
+                  <motion.div
+                    layoutId="navbar-pill"
+                    className="absolute inset-0 bg-gradient-to-r from-red-600/20 to-red-900/40 border border-red-500/50 shadow-[0_0_15px_rgba(220,38,38,0.3)] backdrop-blur-md rounded-full"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className={`relative z-10 flex items-center space-x-1.5 ${isActive || hoveredPath === link.href ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "text-gray-400"}`}>
+                  <span>{link.label}</span>
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Right: The 1878 Badge & Mobile Menu */}
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex flex-shrink-0 items-center">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-brand-gold/15 text-brand-gold border border-brand-gold/30 tracking-widest">
+              EST. 1878
+            </span>
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
