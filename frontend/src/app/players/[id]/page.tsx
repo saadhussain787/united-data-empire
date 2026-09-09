@@ -99,7 +99,7 @@ export default function PlayerDossier() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B0E14] text-white flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-transparent text-white flex items-center justify-center font-sans">
         <div className="text-[#D4AF37] animate-pulse uppercase font-bold tracking-widest">
           Initializing Dossier...
         </div>
@@ -109,7 +109,7 @@ export default function PlayerDossier() {
 
   if (!player) {
     return (
-      <div className="min-h-screen bg-[#0B0E14] text-white flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-transparent text-white flex items-center justify-center font-sans">
         <div className="text-[#DA291C] uppercase font-bold tracking-widest">
           Player Data Not Found
         </div>
@@ -140,7 +140,7 @@ export default function PlayerDossier() {
   const finishingVariance = goals - xG;
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-white p-8 font-sans">
+    <div className="min-h-screen bg-transparent text-white p-8 font-sans">
       {/* Header & Back Button */}
       <header className="mb-8 max-w-6xl mx-auto flex items-center justify-between border-b border-gray-800 pb-4">
         <div className="flex-1 text-left">

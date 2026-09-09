@@ -39,7 +39,7 @@ export default async function SquadPage() {
   const players = await getSquad();
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-gray-200 py-10 px-4 md:px-8 font-sans">
+    <div className="min-h-screen bg-transparent text-gray-200 py-10 px-4 md:px-8 font-sans">
       <div className="max-w-7xl mx-auto">
         <header className="mb-12 border-b border-[#DA291C]/30 pb-6 flex items-center justify-between">
           <div>
