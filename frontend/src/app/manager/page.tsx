@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 // Define the Manager interface matching our /api/manager route
 interface Manager {
@@ -103,7 +104,11 @@ export default function ManagerDossierPage() {
         <>
           {/* The Active Head Coach Spotlight Dossier Card */}
           {currentManager && (
-            <div className="bg-[#0d0e14]/90 border border-white/10 rounded-2xl p-6 md:p-8 mt-8 relative overflow-hidden backdrop-blur-md border-t-2 border-t-[#D4AF37]">
+            <motion.div 
+              whileHover={{ scale: 1.01, y: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="bg-[#0d0e14]/90 border border-white/10 rounded-2xl p-6 md:p-8 mt-8 relative overflow-hidden backdrop-blur-md border-t-2 border-t-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.05)] hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] hover:border-t-[#D4AF37]/80 transition-shadow duration-300"
+            >
               
               {/* Top Status Bar */}
               <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
@@ -167,7 +172,7 @@ export default function ManagerDossierPage() {
                 </div>
 
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Navigation Tabs */}

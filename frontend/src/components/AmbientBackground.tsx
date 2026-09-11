@@ -1,6 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import ThreeBackgroundBadges from "./ThreeBackgroundBadges";
+
+const PARTICLES = Array.from({ length: 20 }).map((_, i) => ({
+  id: i,
+  left: `${5 + (i * 13) % 90}%`, // Pseudo-random horizontal spread
+  duration: 15 + (i % 10) * 3,    // 15s to 45s
+  delay: (i % 7) * 2,             // 0 to 14s delay
+  size: 1 + (i % 3),              // 1px to 3px
+}));
 
 export default function AmbientBackground() {
   return (
@@ -21,33 +30,35 @@ export default function AmbientBackground() {
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
 
-      {/* Left Flank Crest (Red Aura Pillar) */}
-      <motion.div
-        className="absolute top-[22%] -left-12 lg:left-2 w-[42vw] h-[42vw] max-w-[520px] pointer-events-none select-none opacity-[0.03]"
-        style={{ filter: "grayscale(100%) brightness(140%)" }}
-        animate={{ y: [0, 14, 0], scale: [1, 1.015, 1] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <img 
-          src="https://a.espncdn.com/i/teamlogos/soccer/500/360.png" 
-          alt="Left Crest Watermark" 
-          className="w-full h-full object-contain"
-        />
-      </motion.div>
+      {/* Interactive 3D WebGL Crests */}
+      <ThreeBackgroundBadges />
 
-      {/* Right Flank Crest (Gold Aura Pillar) */}
-      <motion.div
-        className="absolute bottom-[18%] -right-12 lg:right-2 w-[42vw] h-[42vw] max-w-[520px] pointer-events-none select-none opacity-[0.035]"
-        style={{ filter: "grayscale(100%) brightness(160%)" }}
-        animate={{ y: [0, -14, 0], scale: [1, 1.015, 1] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-      >
-        <img 
-          src="https://a.espncdn.com/i/teamlogos/soccer/500/360.png" 
-          alt="Right Crest Watermark" 
-          className="w-full h-full object-contain"
-        />
-      </motion.div>
+      {/* Floating Embers / Particles */}
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        {PARTICLES.map((p) => (
+          <motion.div
+            key={p.id}
+            className="absolute bottom-[-10px] rounded-full bg-[#D4AF37]"
+            style={{ 
+              left: p.left, 
+              width: p.size, 
+              height: p.size,
+              boxShadow: `0 0 ${p.size * 3}px rgba(212,175,55,0.6)`
+            }}
+            animate={{
+              y: ["0vh", "-110vh"],
+              opacity: [0, 0.4, 0.8, 0.4, 0],
+              x: ["0px", `${(p.id % 2 === 0 ? 1 : -1) * 30}px`, "0px"] // Gentle sway
+            }}
+            transition={{
+              duration: p.duration,
+              delay: p.delay,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        ))}
+      </div>
 
       {/* Data Matrix Dot-Grid */}
       <div className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(#ffffff22_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)]" />

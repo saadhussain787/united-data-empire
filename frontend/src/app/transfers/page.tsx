@@ -132,7 +132,11 @@ export default function TransfersPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
         
         {/* Card 1: GROSS EXPENDITURE (SIGNINGS) */}
-        <div className="bg-[#111]/80 backdrop-blur-md border border-white/10 p-6 rounded-xl flex flex-col justify-between">
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -5 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="bg-[#111]/80 backdrop-blur-md border border-white/10 p-6 rounded-xl flex flex-col justify-between shadow-[0_0_15px_rgba(244,63,94,0.05)] hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:border-rose-500/30 transition-shadow duration-300"
+        >
           <div>
             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">ERA GROSS SPEND</p>
             <h2 className="text-3xl font-extrabold text-rose-500">
@@ -144,10 +148,14 @@ export default function TransfersPage() {
               {incoming.length} ARRIVALS
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 2: SALES REVENUE (DEPARTURES) */}
-        <div className="bg-[#111]/80 backdrop-blur-md border border-white/10 p-6 rounded-xl flex flex-col justify-between">
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -5 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="bg-[#111]/80 backdrop-blur-md border border-white/10 p-6 rounded-xl flex flex-col justify-between shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] hover:border-emerald-500/30 transition-shadow duration-300"
+        >
           <div>
             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">ERA SALES REVENUE</p>
             <h2 className="text-3xl font-extrabold text-emerald-400">
@@ -159,10 +167,14 @@ export default function TransfersPage() {
               {outgoing.length} DEPARTURES
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 3: NET TRANSFER SPEND */}
-        <div className="bg-[#111]/80 backdrop-blur-md border border-[#D4AF37]/30 p-6 rounded-xl flex flex-col justify-between shadow-[0_0_15px_rgba(212,175,55,0.05)]">
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -5 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="bg-[#111]/80 backdrop-blur-md border border-[#D4AF37]/30 p-6 rounded-xl flex flex-col justify-between shadow-[0_0_15px_rgba(212,175,55,0.05)] hover:shadow-[0_0_25px_rgba(212,175,55,0.2)] hover:border-[#D4AF37]/60 transition-shadow duration-300"
+        >
           <div>
             <p className="text-xs text-[#D4AF37]/70 font-bold uppercase tracking-wider mb-1">ERA NET EXPENDITURE</p>
             <h2 className="text-3xl font-extrabold text-[#D4AF37]">
@@ -174,10 +186,14 @@ export default function TransfersPage() {
               Net cash commitment
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 4: ANNUAL PSR AMORTIZATION */}
-        <div className="bg-[#111]/80 backdrop-blur-md border border-white/10 p-6 rounded-xl flex flex-col justify-between">
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -5 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="bg-[#111]/80 backdrop-blur-md border border-white/10 p-6 rounded-xl flex flex-col justify-between shadow-[0_0_15px_rgba(56,189,248,0.05)] hover:shadow-[0_0_20px_rgba(56,189,248,0.15)] hover:border-sky-400/30 transition-shadow duration-300"
+        >
           <div>
             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">ERA ANNUAL BOOK VALUE BURDEN</p>
             <h2 className="text-3xl font-extrabold text-sky-400">
@@ -189,7 +205,7 @@ export default function TransfersPage() {
               5-Year Straight-Line Depreciation
             </span>
           </div>
-        </div>
+        </motion.div>
 
       </div>
 
