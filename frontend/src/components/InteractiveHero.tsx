@@ -13,7 +13,7 @@ export default function InteractiveHero() {
   const [hoverState, setHoverState] = useState<'abstract' | 'stadium' | 'stretford'>('abstract');
 
   return (
-    <section className="relative overflow-hidden border border-brand-border rounded-2xl shadow-2xl min-h-[500px] flex items-center justify-start p-8 md:p-12">
+    <section className="relative overflow-hidden border border-brand-border rounded-2xl shadow-2xl min-h-[500px] flex items-center justify-start p-6 md:p-12">
       {/* Background Images with Crossfade */}
       <div className="absolute inset-0 bg-[#0B0E14]">
         <Image
@@ -54,10 +54,10 @@ export default function InteractiveHero() {
             The United Data Hub
           </span>
           <h1
-            className={`${bebas.className} text-6xl md:text-7xl tracking-wide text-white leading-none drop-shadow-lg animate-fade-in-up`}
+            className={`${bebas.className} text-5xl md:text-7xl tracking-wide text-white leading-none drop-shadow-lg animate-fade-in-up`}
             style={{ animationDelay: '150ms', animationFillMode: 'forwards' }}
           >
-            THE HEARTBEAT OF <span className={`${teko.className} text-brand-red font-bold text-7xl md:text-8xl tracking-normal uppercase`}>OLD TRAFFORD</span>
+            THE HEARTBEAT OF <span className={`${teko.className} text-brand-red font-bold text-6xl md:text-8xl tracking-normal uppercase`}>OLD TRAFFORD</span>
           </h1>
           <p
             className={`${inter.className} text-gray-300 text-sm md:text-base leading-relaxed animate-fade-in-up`}
@@ -66,14 +66,14 @@ export default function InteractiveHero() {
             High-density statistical tracking, live match intelligence, and deep performance analytics for Manchester United.
           </p>
           <div
-            className="flex flex-wrap gap-4 pt-2 animate-fade-in-up"
+            className="flex flex-col sm:flex-row flex-wrap gap-4 pt-2 animate-fade-in-up"
             style={{ animationDelay: '450ms', animationFillMode: 'forwards' }}
           >
             <Link
               href="/fixtures"
               onMouseEnter={() => setHoverState('stretford')}
               onMouseLeave={() => setHoverState('abstract')}
-              className="bg-[#DA291C] hover:bg-[#7A0006] text-white px-6 py-3 rounded font-bold text-sm uppercase tracking-wider shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(218,41,28,0.5)]"
+              className="w-full sm:w-auto text-center bg-[#DA291C] hover:bg-[#7A0006] text-white px-6 py-3 rounded font-bold text-sm uppercase tracking-wider shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(218,41,28,0.5)]"
             >
               Match Calendar →
             </Link>
@@ -81,7 +81,7 @@ export default function InteractiveHero() {
               href="/squad"
               onMouseEnter={() => setHoverState('stadium')}
               onMouseLeave={() => setHoverState('abstract')}
-              className="bg-transparent hover:bg-brand-red/20 border border-brand-red/30 hover:border-brand-red text-gray-200 hover:text-white px-6 py-3 rounded font-bold text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(218,41,28,0.3)] backdrop-blur-sm"
+              className="w-full sm:w-auto text-center bg-transparent hover:bg-brand-red/20 border border-brand-red/30 hover:border-brand-red text-gray-200 hover:text-white px-6 py-3 rounded font-bold text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(218,41,28,0.3)] backdrop-blur-sm"
             >
               Players Directory
             </Link>

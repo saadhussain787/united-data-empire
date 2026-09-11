@@ -106,13 +106,13 @@ export default async function HomePage() {
               </div>
 
               {/* Center: Teams & Match Score/VS Badge */}
-              <div className="flex items-center justify-center space-x-6 md:space-x-10 w-full md:w-2/4">
+              <div className="flex items-center justify-center space-x-4 md:space-x-10 w-full md:w-2/4">
                 {/* Home Team */}
-                <div className="flex items-center justify-end space-x-3 w-5/12 text-right">
-                  <span className="font-bold text-base md:text-lg text-white truncate">
+                <div className="flex items-center justify-end space-x-2 md:space-x-3 w-5/12 text-right">
+                  <span className="font-bold text-sm md:text-lg text-white truncate">
                     {headlineMatch.homeTeamName}
                   </span>
-                  <div className="w-12 h-12 relative flex-shrink-0">
+                  <div className="w-10 h-10 md:w-12 md:h-12 relative flex-shrink-0">
                     <Image
                       src={headlineMatch.homeTeamLogo}
                       alt={headlineMatch.homeTeamName}
@@ -147,8 +147,8 @@ export default async function HomePage() {
                 </div>
 
                 {/* Away Team */}
-                <div className="flex items-center justify-start space-x-3 w-5/12 text-left">
-                  <div className="w-12 h-12 relative flex-shrink-0">
+                <div className="flex items-center justify-start space-x-2 md:space-x-3 w-5/12 text-left">
+                  <div className="w-10 h-10 md:w-12 md:h-12 relative flex-shrink-0">
                     <Image
                       src={headlineMatch.awayTeamLogo}
                       alt={headlineMatch.awayTeamName}
@@ -157,7 +157,7 @@ export default async function HomePage() {
                       unoptimized
                     />
                   </div>
-                  <span className="font-bold text-base md:text-lg text-white truncate">
+                  <span className="font-bold text-sm md:text-lg text-white truncate">
                     {headlineMatch.awayTeamName}
                   </span>
                 </div>

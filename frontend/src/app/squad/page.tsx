@@ -43,7 +43,7 @@ export default async function SquadPage() {
     <div className="min-h-screen bg-transparent text-gray-200 py-10 px-4 md:px-8 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Cinematic Hero Header for Players Directory */}
-        <header className="relative w-full h-[400px] mb-12 rounded-2xl overflow-hidden border border-[#DA291C]/30 shadow-2xl flex items-end p-8 md:p-12">
+        <header className="relative w-full h-[250px] md:h-[400px] mb-12 rounded-2xl overflow-hidden border border-[#DA291C]/30 shadow-2xl flex items-end p-6 md:p-12">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -64,7 +64,7 @@ export default async function SquadPage() {
               <span className="bg-[#DA291C] text-white text-xs font-black uppercase px-3 py-1 rounded tracking-widest inline-block mb-3">
                 The Legends & The Future
               </span>
-              <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-wide text-white drop-shadow-lg" style={{ fontFamily: 'var(--font-bebas)' }}>
+              <h1 className="text-4xl md:text-7xl font-bold uppercase tracking-wide text-white drop-shadow-lg" style={{ fontFamily: 'var(--font-bebas)' }}>
                 Squad Directory
               </h1>
               <p className="text-[#D4AF37] mt-2 font-medium tracking-widest text-sm md:text-base">
