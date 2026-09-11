@@ -3,13 +3,15 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Bebas_Neue, Inter } from 'next/font/google';
+import { Bebas_Neue, Inter, Teko } from 'next/font/google';
 import prisma from '@/lib/prisma';
 import { Match } from '@prisma/client';
 import FeaturedPlayerCard from './FeaturedPlayerCard';
+import InteractiveHero from '@/components/InteractiveHero';
 
 const bebas = Bebas_Neue({ weight: '400', subsets: ['latin'] });
 const inter = Inter({ subsets: ['latin'] });
+const teko = Teko({ weight: ['600', '700'], subsets: ['latin'] });
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -64,35 +66,7 @@ export default async function HomePage() {
       <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-[#151A22] to-[#0B0E14] border border-[#2A313C] rounded-2xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#DA291C]/10 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div className="relative z-10 space-y-4 max-w-2xl">
-            <span className="bg-[#DA291C] text-white text-xs font-black uppercase px-3 py-1 rounded tracking-widest inline-block">
-              The United Data Hub
-            </span>
-            <h1 className={`${bebas.className} text-6xl md:text-7xl tracking-wide text-white leading-none`}>
-              THE HEARTBEAT OF <span className="text-[#DA291C]">OLD TRAFFORD</span>
-            </h1>
-            <p className={`${inter.className} text-gray-400 text-sm md:text-base leading-relaxed`}>
-              High-density statistical tracking, live match intelligence, and deep performance analytics for Manchester United.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link
-                href="/fixtures"
-                className="bg-[#DA291C] hover:bg-[#7A0006] text-white px-6 py-3 rounded font-bold transition-colors text-sm uppercase tracking-wider shadow-lg"
-              >
-                Match Calendar →
-              </Link>
-              <Link
-                href="/squad"
-                className="bg-[#151A22] hover:bg-[#2A313C] border border-[#2A313C] text-gray-300 hover:text-white px-6 py-3 rounded font-bold transition-colors text-sm uppercase tracking-wider"
-              >
-                Players Directory
-              </Link>
-            </div>
-          </div>
-        </section>
+        <InteractiveHero />
 
         {/* Campaign Headline Match */}
         <section className="space-y-4">

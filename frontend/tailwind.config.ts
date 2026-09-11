@@ -24,8 +24,23 @@ const config: Config = {
         display: ["var(--font-bebas)", "sans-serif"],
         sans: ["var(--font-inter)", "sans-serif"],
       },
+      keyframes: {
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'heartbeat': {
+          '0%, 100%': { opacity: '0.3', transform: 'scaleX(1)' },
+          '50%': { opacity: '1', transform: 'scaleX(1.1)' },
+        }
+      },
       animation: {
         "pulse-live": "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "fade-in-up": "fade-in-up 0.8s ease-out forwards",
+        "heartbeat-pulse": "heartbeat 2s ease-in-out infinite",
+      },
+      backgroundImage: {
+        'noise': "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
       },
     },
   },

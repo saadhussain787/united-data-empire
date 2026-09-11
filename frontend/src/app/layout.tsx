@@ -4,6 +4,7 @@ import { Inter, Bebas_Neue } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import JsonLd from "@/components/JsonLd";
 import AmbientBackground from "@/components/AmbientBackground";
+import Global3DBackground from "@/components/Global3DBackground";
 import "./globals.css";
 
 const inter = Inter({
@@ -34,6 +35,7 @@ export default function RootLayout({
     <html lang="en" className={`dark ${inter.variable} ${bebasNeue.variable}`}>
       <body className="relative min-h-screen bg-[#050508] text-white antialiased selection:bg-brand-red selection:text-white font-sans">
         <AmbientBackground />
+        <Global3DBackground />
         <div className="relative z-10 bg-transparent flex flex-col min-h-screen">
           <JsonLd />
           <Navbar />

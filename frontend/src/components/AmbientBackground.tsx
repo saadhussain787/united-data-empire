@@ -13,7 +13,7 @@ const PARTICLES = Array.from({ length: 20 }).map((_, i) => ({
 
 export default function AmbientBackground() {
   return (
-    <div className="fixed inset-0 z-0 bg-[#050508] overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
       {/* Orb 1: Manchester United Red Glow */}
       <motion.div
         className="absolute -top-32 -left-32 w-[55vw] h-[55vw] rounded-full blur-[90px]"
