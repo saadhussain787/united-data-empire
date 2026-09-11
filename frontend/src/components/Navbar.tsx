@@ -17,6 +17,8 @@ const NAV_LINKS: NavItem[] = [
   { label: "Fixtures & Results", href: "/fixtures" },
   { label: "Tables", href: "/tables" },
   { label: "First Team Squad", href: "/squad" },
+  { label: "Manager", href: "/manager" },
+  { label: "Transfers", href: "/transfers" },
   { label: "Analytics", href: "/analytics" },
   { label: "History & Legends", href: "/history" },
 ];
@@ -70,7 +72,7 @@ export default function Navbar() {
         </div>
 
         {/* Center: Desktop Navigation Links */}
-        <nav className="hidden md:flex flex-1 justify-center items-center gap-1 lg:gap-2" onMouseLeave={() => setHoveredPath(null)}>
+        <nav className="hidden md:flex flex-1 justify-center items-center gap-1 lg:gap-1.5" onMouseLeave={() => setHoveredPath(null)}>
           {NAV_LINKS.map((link) => {
             const isActive = pathname === link.href;
             const showPill = hoveredPath ? hoveredPath === link.href : isActive;
@@ -80,7 +82,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onMouseEnter={() => setHoveredPath(link.href)}
-                className={`relative px-4 py-2 rounded-full text-[13px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-200`}
+                className={`relative px-4 py-2 rounded-full text-[12px] md:text-[13px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-200`}
               >
                 {showPill && (
                   <motion.div

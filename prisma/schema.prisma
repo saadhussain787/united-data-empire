@@ -167,6 +167,10 @@ model Transfer {
   otherClubLogo  String?
   fee            String    
   transferType   String    
+  feeNumeric     Float     @default(0.0)
+  currency       String    @default("EUR")
+  contractYears  Int?      @default(5)
+  weeklyWage     Float?    @default(0.0)
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
