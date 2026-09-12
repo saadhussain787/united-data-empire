@@ -290,7 +290,7 @@ function getCampaignTelemetry(competitionName: string, season: string): Campaign
   if (lowerComp.includes('english champion') || lowerComp.includes('premier league')) {
     const plData: Record<number, { stat: string; note: string }> = {
       1908: { stat: '52 Pts • Turnbull (25)', note: 'First league title in Manchester United history.' },
-      1911: { stat: '52 Pts • Halse (19)', note: 'Second league crown at the brand-new Old Trafford.' },
+      1911: { stat: '52 Pts • West (19)', note: 'Second league crown at the brand-new Old Trafford.' },
       1952: { stat: '57 Pts • Rowley (30)', note: "Sir Matt Busby's maiden championship triumph." },
       1956: { stat: '60 Pts • Taylor (25)', note: 'The legendary Busby Babes conquer English football.' },
       1957: { stat: '64 Pts • Taylor (22)', note: 'Busby Babes retain the league title with iconic swagger.' },
@@ -325,12 +325,12 @@ function getCampaignTelemetry(competitionName: string, season: string): Campaign
       1977: { mgr: 'Tommy Docherty', stat: 'Final: 2 — 1 vs Liverpool', note: 'Denied Liverpool a treble at a rocking Wembley.' },
       1983: { mgr: 'Ron Atkinson', stat: 'Final: 4 — 0 vs Brighton', note: 'Bryan Robson masterclass in Wembley replay.' },
       1985: { mgr: 'Ron Atkinson', stat: 'Final: 1 — 0 vs Everton', note: "Norman Whiteside 110' curling stunner with 10 men." },
-      1990: { mgr: 'Sir Alex Ferguson', stat: 'Final: 1 — 0 vs Palace (replay)', note: 'Lee Martin strike launched the Ferguson Dynasty.' },
+      1990: { mgr: 'Sir Alex Ferguson', stat: 'Final: 1 — 0 vs Crystal Palace (replay)', note: 'Lee Martin strike launched the Ferguson Dynasty.' },
       1994: { mgr: 'Sir Alex Ferguson', stat: 'Final: 4 — 0 vs Chelsea', note: 'Cantona penalty double seals historic Double.' },
       1996: { mgr: 'Sir Alex Ferguson', stat: 'Final: 1 — 0 vs Liverpool', note: "Cantona 85' volley seals the Double Double." },
       1999: { mgr: 'Sir Alex Ferguson', stat: 'Final: 2 — 0 vs Newcastle', note: '⭐ Sheringham & Scholes seal FA Cup leg of Treble.' },
       2004: { mgr: 'Sir Alex Ferguson', stat: 'Final: 3 — 0 vs Millwall', note: "Cristiano Ronaldo's first trophy in English football." },
-      2016: { mgr: 'Louis van Gaal', stat: 'Final: 2 — 1 vs Palace (AET)', note: "Jesse Lingard 110' volley with 10 men." },
+      2016: { mgr: 'Louis van Gaal', stat: 'Final: 2 — 1 vs Crystal Palace (AET)', note: "Jesse Lingard 110' volley with 10 men." },
       2024: { mgr: 'Erik ten Hag', stat: 'Final: 2 — 1 vs Man City', note: 'Garnacho & Mainoo masterclass to stun rivals.' },
     };
     if (faData[sYear]) {
@@ -461,6 +461,8 @@ interface DecadeBucket {
 const DECADE_INTERVALS = [
   { label: '00s', fullDecade: '1900s', startYear: 1900, endYear: 1909 },
   { label: '10s', fullDecade: '1910s', startYear: 1910, endYear: 1919 },
+  { label: '20s', fullDecade: '1920s', startYear: 1920, endYear: 1929 },
+  { label: '30s', fullDecade: '1930s', startYear: 1930, endYear: 1939 },
   { label: '40s', fullDecade: '1940s', startYear: 1940, endYear: 1949 },
   { label: '50s', fullDecade: '1950s', startYear: 1950, endYear: 1959 },
   { label: '60s', fullDecade: '1960s', startYear: 1960, endYear: 1969 },
@@ -474,10 +476,12 @@ const DECADE_INTERVALS = [
 
 function getDecadeDistribution(winningSeasons: string[]): DecadeBucket[] {
   return DECADE_INTERVALS.map((dec) => {
-    const matchingSeasons = winningSeasons.filter((s) => {
-      const yr = parseSeasonYear(s);
-      return yr >= dec.startYear && yr <= dec.endYear;
-    });
+    const matchingSeasons = winningSeasons
+      .filter((s) => {
+        const yr = parseSeasonYear(s);
+        return yr >= dec.startYear && yr <= dec.endYear;
+      })
+      .sort((a, b) => parseSeasonYear(a) - parseSeasonYear(b));
 
     return {
       ...dec,
@@ -495,6 +499,11 @@ export default function HistoryPage() {
   const [activeCategory, setActiveCategory] = useState<'all' | CompetitionCategory>('all');
   const [sortBy, setSortBy] = useState<SortOption>('prestige');
   const [highlightSeason, setHighlightSeason] = useState<string | null>(null);
+  const [hoveredCardTelemetry, setHoveredCardTelemetry] = useState<{
+    trophyId: number;
+    season: string;
+    sIdx: number;
+  } | null>(null);
 
   // Fetch data from the honours API route
   useEffect(() => {
@@ -649,7 +658,7 @@ export default function HistoryPage() {
       </div>
 
       {/* THE OFFICIAL SILVERWARE CABINET (Obsidian Titanium Vault) */}
-      <div id="trophy-vault" className="mt-24 w-full pb-24 pt-20 md:pt-24 px-6 md:px-10 relative overflow-hidden rounded-[32px] scroll-mt-28 bg-[#0B0E14]/90 backdrop-blur-2xl border border-[#D4AF37]/20 shadow-[0_0_50px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.08)]">
+      <div id="trophy-vault" className="mt-24 w-full pb-24 pt-20 md:pt-24 px-6 md:px-10 relative overflow-hidden rounded-[32px] scroll-mt-36 md:scroll-mt-40 bg-[#0B0E14]/90 backdrop-blur-2xl border border-[#D4AF37]/20 shadow-[0_0_50px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.08)]">
         {/* Subtle Cyber Grid & Ambient Radial Lighting */}
         <div 
           className="absolute inset-0 pointer-events-none opacity-20"
@@ -800,7 +809,7 @@ export default function HistoryPage() {
                 key={trophy.id}
                 whileHover={{ y: -8, scale: isCardHighlighted ? 1.03 : 1.015 }}
                 transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                className={`w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] shrink-0 flex flex-col justify-between min-h-[480px] p-6 rounded-2xl relative overflow-visible backdrop-blur-xl transition-all duration-300 ${
+                className={`scroll-mt-24 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(33.333%-16px)] 2xl:w-[calc(25%-18px)] shrink-0 flex flex-col justify-between min-h-[480px] p-6 rounded-2xl relative overflow-visible backdrop-blur-xl transition-all duration-300 ${
                   isCardHighlighted
                     ? 'bg-gradient-to-b from-[#D4AF37]/15 via-neutral-950/85 to-neutral-950/95 border-[#D4AF37] ring-1 ring-[#D4AF37]/70 shadow-[0_0_40px_rgba(212,175,55,0.35),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-[1.02] z-20'
                     : hasFilter
@@ -931,7 +940,7 @@ export default function HistoryPage() {
                           </div>
 
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs sm:text-sm font-bold text-white truncate" title={dossier.opponent}>
+                            <span className="text-xs sm:text-sm font-bold text-white leading-tight min-w-0" title={dossier.opponent}>
                               vs {dossier.opponent}
                             </span>
                             <span className="font-mono font-black text-xs sm:text-sm text-[#FCEEAC] bg-[#D4AF37]/20 px-2 py-0.5 rounded border border-[#D4AF37]/40 shadow-[0_0_8px_rgba(212,175,55,0.25)] shrink-0">
@@ -947,9 +956,9 @@ export default function HistoryPage() {
                             </span>
                           </div>
 
-                          <div className="text-[9px] font-mono text-neutral-400 mt-2 flex items-center justify-between border-t border-white/5 pt-1.5">
-                            <span className="truncate max-w-[130px]">📍 {dossier.venue}</span>
-                            <span className="text-neutral-300 font-medium">👔 {dossier.manager}</span>
+                          <div className="text-[9.5px] font-mono text-neutral-400 mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-t border-white/5 pt-1.5">
+                            <span className="text-neutral-300">📍 {dossier.venue}</span>
+                            <span className="text-neutral-300 font-medium shrink-0">👔 {dossier.manager}</span>
                           </div>
                         </div>
 
@@ -965,7 +974,7 @@ export default function HistoryPage() {
                           <span>CHRONO BARCODE</span>
                           <span className="text-[#D4AF37]/80">SOLO CONQUEST</span>
                         </div>
-                        <div className="grid grid-cols-11 gap-1 items-end h-13 sm:h-14 px-1.5 pt-1.5 pb-1.5 rounded-lg bg-black/50 border border-white/10 shadow-inner">
+                        <div className="grid grid-flow-col auto-cols-fr gap-1 items-end h-13 sm:h-14 px-1.5 pt-1.5 pb-1.5 rounded-lg bg-black/50 border border-white/10 shadow-inner">
                           {decadeBuckets.map((bucket, bIdx) => {
                             const hasWins = bucket.count > 0;
                             const hasHighlightedSeasonInBucket = hasFilter
@@ -991,7 +1000,7 @@ export default function HistoryPage() {
                                       ? hasFilter
                                         ? 'bg-[#D4AF37]/40 opacity-40'
                                         : 'bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.7)]'
-                                      : 'bg-white/10 group-hover/decade:bg-white/20'
+                                      : 'bg-white/15 group-hover/decade:bg-white/30'
                                   }`}
                                   style={{ height: `${heightPercent}%` }}
                                 />
@@ -1001,13 +1010,13 @@ export default function HistoryPage() {
                                     &apos;{String(bucket.startYear % 100).padStart(2, '0')}
                                   </span>
                                 ) : (
-                                  <span className="text-[10px] font-mono text-white/20 mt-1 select-none transition-colors group-hover/decade:text-neutral-300 leading-tight">
+                                  <span className="text-[10px] font-mono text-neutral-500 font-bold mt-1 select-none transition-colors group-hover/decade:text-neutral-300 leading-tight">
                                     &bull;
                                   </span>
                                 )}
 
                                 {/* Laser Hover Tooltip */}
-                                <div className={`pointer-events-none absolute -top-9 opacity-0 group-hover/decade:opacity-100 group-hover/decade:-translate-y-1 transition-all duration-150 px-2.5 py-1 text-[10px] font-mono font-bold text-[#FCEEAC] bg-neutral-950/98 border border-[#D4AF37]/60 rounded-md shadow-2xl whitespace-nowrap z-50 ${tooltipAlignClass}`}>
+                                <div className={`pointer-events-none absolute -top-10 opacity-0 group-hover/decade:opacity-100 group-hover/decade:-translate-y-1 transition-all duration-150 px-2.5 py-1 text-[10px] font-mono font-bold text-[#FCEEAC] bg-neutral-950/98 border border-[#D4AF37]/60 rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.8)] whitespace-nowrap z-[60] ${tooltipAlignClass}`}>
                                   <span className="text-white">{bucket.fullDecade}:</span>{' '}
                                   {hasWins ? (
                                     <>
@@ -1026,146 +1035,167 @@ export default function HistoryPage() {
                     </div>
                   ) : (
                     /* Multi-Win Seasons Matrix */
-                    <div className="flex flex-col justify-between h-full">
+                    <div className="flex flex-col justify-between h-full relative">
                       <div>
                         <div className="text-[10px] font-mono tracking-widest text-[#D4AF37]/70 uppercase mb-3 select-none flex items-center justify-between">
-                        <span>SEASONS MATRIX</span>
-                        <span className="text-white/40">{trophy.winningSeasons.length} TITLES</span>
+                          <span>SEASONS MATRIX</span>
+                          <span className="text-white/40">{trophy.winningSeasons.length} TITLES</span>
+                        </div>
+
+                        {/* Constellation Cluster of Readable Year Chips */}
+                        <div className="flex flex-wrap gap-2 items-center py-1">
+                          {trophy.winningSeasons.map((season, sIdx) => {
+                            const sYear = parseSeasonYear(season);
+                            const shortYear = String(sYear % 100).padStart(2, '0');
+                            const displayYear = sYear < 1950 ? String(sYear) : `'${shortYear}`;
+                            const isTrebleYear = sYear === 1999;
+                            const isDoubleYear = sYear === 2008;
+                            const isLatest = sIdx === trophy.winningSeasons.length - 1;
+                            const isNodeHighlighted = matchesSeasonHighlight(season, highlightSeason);
+                            const isHovered = hoveredCardTelemetry?.trophyId === trophy.id && hoveredCardTelemetry.season === season;
+
+                            const eraBadge = sYear >= 1987 && sYear <= 2013
+                              ? { 
+                                  label: 'SAF ERA', 
+                                  color: 'text-[#FCEEAC]',
+                                  chipStyle: 'bg-[#D4AF37]/15 text-[#FCEEAC] border-[#D4AF37]/40 hover:bg-[#D4AF37]/30 hover:border-[#D4AF37] hover:shadow-[0_0_10px_rgba(212,175,55,0.4)]'
+                                }
+                              : sYear >= 1946 && sYear <= 1969
+                              ? { 
+                                  label: 'BUSBY ERA', 
+                                  color: 'text-cyan-300',
+                                  chipStyle: 'bg-cyan-500/15 text-cyan-200 border-cyan-500/40 hover:bg-cyan-500/30 hover:border-cyan-400 hover:shadow-[0_0_10px_rgba(6,182,212,0.4)]'
+                                }
+                              : sYear >= 2014
+                              ? { 
+                                  label: 'POST-SAF', 
+                                  color: 'text-red-300',
+                                  chipStyle: 'bg-red-500/15 text-red-200 border-red-500/40 hover:bg-red-500/30 hover:border-red-400 hover:shadow-[0_0_10px_rgba(239,68,68,0.4)]'
+                                }
+                              : { 
+                                  label: 'HERITAGE', 
+                                  color: 'text-neutral-300',
+                                  chipStyle: 'bg-slate-700/20 text-slate-300 border-slate-600/40 hover:bg-slate-700/35 hover:border-slate-400 hover:shadow-[0_0_10px_rgba(148,163,184,0.3)]'
+                                };
+
+                            return (
+                              <div
+                                key={`${trophy.id}-${season}-${sIdx}`}
+                                className="relative flex items-center justify-center hover:z-30"
+                              >
+                                {/* Radar Pulse Beacon on Latest Win */}
+                                {isLatest && !hasFilter && (
+                                  <span className="absolute -inset-0.5 rounded-[6px] bg-[#D4AF37]/30 animate-pulse pointer-events-none" />
+                                )}
+
+                                {/* Interactive Year Chip */}
+                                <button
+                                  type="button"
+                                  onClick={() => setHighlightSeason(highlightSeason === season ? null : season)}
+                                  onMouseEnter={() => setHoveredCardTelemetry({ trophyId: trophy.id, season, sIdx })}
+                                  onMouseLeave={() => setHoveredCardTelemetry(null)}
+                                  title={`Click to filter season ${season} across all trophies`}
+                                  className={`inline-flex items-center justify-center px-1.5 py-0.5 min-w-[30px] sm:min-w-[32px] h-5 rounded-[5px] text-[10px] font-mono font-bold tracking-tight transition-all duration-200 cursor-pointer select-none border relative z-10 ${
+                                    isNodeHighlighted || isHovered
+                                      ? 'bg-[#FCEEAC] text-neutral-950 border-white scale-[1.04] shadow-[0_0_12px_rgba(252,238,172,0.85)] ring-1 ring-[#D4AF37]'
+                                      : hasFilter
+                                      ? 'bg-neutral-900/60 border-white/5 text-neutral-600 opacity-30'
+                                      : eraBadge.chipStyle
+                                  }`}
+                                >
+                                  {isTrebleYear && <span className="mr-0.5 text-[9px] drop-shadow-sm">⭐</span>}
+                                  {isDoubleYear && <span className="mr-0.5 text-[9px] drop-shadow-sm">⚡</span>}
+                                  <span>{displayYear}</span>
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
 
-                      {/* Constellation Cluster of Readable Year Chips */}
-                      <div className="flex flex-wrap gap-1.5 items-center py-1">
-                        {trophy.winningSeasons.map((season, sIdx) => {
+                      {/* Telemetry Inspector Dock */}
+                      <div className="mt-4 min-h-[110px] flex flex-col justify-end">
+                        {hoveredCardTelemetry && hoveredCardTelemetry.trophyId === trophy.id ? (() => {
+                          const { season, sIdx } = hoveredCardTelemetry;
                           const sYear = parseSeasonYear(season);
-                          const shortYear = String(sYear % 100).padStart(2, '0');
                           const isTrebleYear = sYear === 1999;
                           const isDoubleYear = sYear === 2008;
-                          const isLatest = sIdx === trophy.winningSeasons.length - 1;
-                          const isNodeHighlighted = matchesSeasonHighlight(season, highlightSeason);
-
                           const eraBadge = sYear >= 1987 && sYear <= 2013
-                            ? { 
-                                label: 'SAF ERA', 
-                                color: 'text-[#FCEEAC]',
-                                chipStyle: 'bg-[#D4AF37]/15 text-[#FCEEAC] border-[#D4AF37]/40 hover:bg-[#D4AF37]/30 hover:border-[#D4AF37] hover:shadow-[0_0_10px_rgba(212,175,55,0.4)]'
-                              }
+                            ? { label: 'SAF ERA', color: 'text-[#FCEEAC]' }
                             : sYear >= 1946 && sYear <= 1969
-                            ? { 
-                                label: 'BUSBY ERA', 
-                                color: 'text-cyan-300',
-                                chipStyle: 'bg-cyan-500/15 text-cyan-200 border-cyan-500/40 hover:bg-cyan-500/30 hover:border-cyan-400 hover:shadow-[0_0_10px_rgba(6,182,212,0.4)]'
-                              }
+                            ? { label: 'BUSBY ERA', color: 'text-cyan-300' }
                             : sYear >= 2014
-                            ? { 
-                                label: 'POST-SAF', 
-                                color: 'text-red-300',
-                                chipStyle: 'bg-red-500/15 text-red-200 border-red-500/40 hover:bg-red-500/30 hover:border-red-400 hover:shadow-[0_0_10px_rgba(239,68,68,0.4)]'
-                              }
-                            : { 
-                                label: 'HERITAGE', 
-                                color: 'text-neutral-300',
-                                chipStyle: 'bg-slate-700/20 text-slate-300 border-slate-600/40 hover:bg-slate-700/35 hover:border-slate-400 hover:shadow-[0_0_10px_rgba(148,163,184,0.3)]'
-                              };
-
+                            ? { label: 'POST-SAF', color: 'text-red-300' }
+                            : { label: 'HERITAGE', color: 'text-neutral-300' };
                           const telemetry = getCampaignTelemetry(trophy.competitionName, season);
-                          const col = sIdx % 5;
-                          const isLeftAlign = col <= 1;
-                          const isRightAlign = col >= 3;
-                          const popoverAlignClass = isLeftAlign
-                            ? 'left-0'
-                            : isRightAlign
-                            ? 'right-0'
-                            : 'left-1/2 -translate-x-1/2';
-                          const caretAlignClass = isLeftAlign
-                            ? 'left-3.5'
-                            : isRightAlign
-                            ? 'right-3.5'
-                            : 'left-1/2 -translate-x-1/2';
 
                           return (
                             <div
-                              key={`${trophy.id}-${season}-${sIdx}`}
-                              className="relative group/node flex items-center justify-center hover:z-50"
+                              onMouseEnter={() => setHoveredCardTelemetry({ trophyId: trophy.id, season, sIdx })}
+                              onMouseLeave={() => setHoveredCardTelemetry(null)}
+                              className="w-full p-3 text-[10px] font-mono bg-[#0A0D14]/98 border border-[#D4AF37]/80 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex flex-col gap-1.5 transition-all duration-200 pointer-events-auto"
                             >
-                              {/* Radar Pulse Beacon on Latest Win */}
-                              {isLatest && !hasFilter && (
-                                <span className="absolute -inset-0.5 rounded-[6px] bg-[#D4AF37]/30 animate-pulse pointer-events-none" />
-                              )}
+                              {/* Popover Header: Season + Era + Icons */}
+                              <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-white font-bold text-xs">{season}</span>
+                                  {isTrebleYear && (
+                                    <span className="text-[9px] font-bold text-[#E3B044] bg-[#E3B044]/15 px-1 rounded border border-[#E3B044]/30">
+                                      ⭐ TREBLE
+                                    </span>
+                                  )}
+                                  {isDoubleYear && (
+                                    <span className="text-[9px] font-bold text-[#E3B044] bg-[#E3B044]/15 px-1 rounded border border-[#E3B044]/30">
+                                      ⚡ WORLD TREBLE
+                                    </span>
+                                  )}
+                                </div>
+                                <span className={`text-[9px] font-bold ${eraBadge.color}`}>{eraBadge.label}</span>
+                              </div>
 
-                              {/* Interactive Year Chip */}
+                              {/* Manager & Key Match / Points Stat */}
+                              <div className="space-y-1 py-0.5">
+                                <div className="flex items-start justify-between text-[10px] gap-2">
+                                  <span className="text-neutral-400 font-semibold shrink-0">Manager:</span>
+                                  <span className="font-bold text-white text-right break-words flex-1">👔 {telemetry.manager}</span>
+                                </div>
+                                <div className="flex items-start justify-between gap-2 text-[10px]">
+                                  <span className="text-neutral-400 font-semibold shrink-0">Details:</span>
+                                  <span className="text-[#FCEEAC] font-semibold text-right leading-tight break-words flex-1">{telemetry.keyStat}</span>
+                                </div>
+                              </div>
+
+                              {/* Archival Milestone Note */}
+                              <p className="text-[9.5px] text-neutral-200 font-medium leading-relaxed border-t border-white/10 pt-1.5 break-words">
+                                <span className="text-[#D4AF37] font-bold mr-0.5">&ldquo;</span>
+                                {telemetry.highlight}
+                                <span className="text-[#D4AF37] font-bold ml-0.5">&rdquo;</span>
+                              </p>
+
+                              {/* Action Prompt Callout */}
                               <button
                                 type="button"
-                                onClick={() => setHighlightSeason(highlightSeason === season ? null : season)}
-                                title={`Click to filter season ${season} across all trophies`}
-                                className={`inline-flex items-center justify-center px-1.5 py-0.5 min-w-[30px] h-5 rounded-[5px] text-[10px] font-mono font-bold tracking-tight transition-all duration-200 cursor-pointer select-none border relative z-10 ${
-                                  isNodeHighlighted
-                                    ? 'bg-[#FCEEAC] text-neutral-950 border-white scale-110 shadow-[0_0_16px_rgba(255,255,255,0.9),0_0_8px_rgba(212,175,55,1)] ring-2 ring-[#D4AF37]'
-                                    : hasFilter
-                                    ? 'bg-neutral-900/60 border-white/5 text-neutral-600 opacity-25 scale-95'
-                                    : eraBadge.chipStyle
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setHighlightSeason(highlightSeason === season ? null : season);
+                                }}
+                                className={`text-[9px] font-bold uppercase tracking-wider text-center pt-1.5 pb-0.5 px-2 rounded-md border-t border-white/5 flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                                  highlightSeason === season
+                                    ? 'bg-[#D4AF37]/20 text-[#FCEEAC] border-[#D4AF37]/50 shadow-[0_0_8px_rgba(212,175,55,0.3)]'
+                                    : 'text-[#FCEEAC]/90 hover:text-white hover:bg-white/5'
                                 }`}
                               >
-                                {isTrebleYear && <span className="mr-0.5 text-[9px] drop-shadow-sm">⭐</span>}
-                                {isDoubleYear && <span className="mr-0.5 text-[9px] drop-shadow-sm">⚡</span>}
-                                <span>&apos;{shortYear}</span>
+                                <span className="text-[#D4AF37] text-[10px]">✦</span>
+                                <span>{highlightSeason === season ? 'ACTIVE FILTER • CLICK TO CLEAR' : 'CLICK TO CROSS-FILTER VAULT'}</span>
                               </button>
-
-                              {/* Interactive Campaign Telemetry Micro-Popover */}
-                              <div
-                                className={`pointer-events-none absolute bottom-full mb-2.5 opacity-0 group-hover/node:opacity-100 group-hover/node:-translate-y-1 transition-all duration-200 w-52 sm:w-56 max-w-[240px] p-3 text-[10px] font-mono bg-[#0A0D14] border border-[#D4AF37]/80 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,1)] z-50 flex flex-col gap-1.5 ${popoverAlignClass}`}
-                              >
-                                {/* Popover Header: Season + Era + Icons */}
-                                <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="text-white font-bold text-xs">{season}</span>
-                                    {isTrebleYear && (
-                                      <span className="text-[9px] font-bold text-[#E3B044] bg-[#E3B044]/15 px-1 rounded border border-[#E3B044]/30">
-                                        ⭐ TREBLE
-                                      </span>
-                                    )}
-                                    {isDoubleYear && (
-                                      <span className="text-[9px] font-bold text-[#E3B044] bg-[#E3B044]/15 px-1 rounded border border-[#E3B044]/30">
-                                        ⚡ WORLD TREBLE
-                                      </span>
-                                    )}
-                                  </div>
-                                  <span className={`text-[9px] font-bold ${eraBadge.color}`}>{eraBadge.label}</span>
-                                </div>
-
-                                {/* Manager & Key Match / Points Stat */}
-                                <div className="space-y-1.5 py-1">
-                                  <div className="flex items-center justify-between text-[10px]">
-                                    <span className="text-neutral-400 font-semibold">Manager:</span>
-                                    <span className="font-bold text-white">👔 {telemetry.manager}</span>
-                                  </div>
-                                  <div className="flex items-start justify-between gap-1 text-[10px]">
-                                    <span className="text-neutral-400 font-semibold shrink-0">Details:</span>
-                                    <span className="text-[#FCEEAC] font-semibold text-right leading-tight">{telemetry.keyStat}</span>
-                                  </div>
-                                </div>
-
-                                {/* Archival Milestone Note */}
-                                <p className="text-[9.5px] text-neutral-200 font-medium leading-relaxed border-t border-white/10 pt-1.5 break-words">
-                                  <span className="text-[#D4AF37] font-bold mr-0.5">&ldquo;</span>
-                                  {telemetry.highlight}
-                                  <span className="text-[#D4AF37] font-bold ml-0.5">&rdquo;</span>
-                                </p>
-
-                                {/* Action Prompt Callout */}
-                                <div className="text-[9px] text-[#FCEEAC] font-bold uppercase tracking-wider text-center pt-1 border-t border-white/5 flex items-center justify-center gap-1">
-                                  <span className="text-[#D4AF37]">✦</span>
-                                  <span>CLICK TO CROSS-FILTER VAULT</span>
-                                </div>
-
-                                {/* Downward Arrow Caret */}
-                                <div className={`absolute top-full border-4 border-transparent border-t-[#D4AF37]/80 ${caretAlignClass}`} />
-                                <div className={`absolute top-full -mt-[1px] border-4 border-transparent border-t-[#0A0D14] ${caretAlignClass}`} />
-                              </div>
                             </div>
                           );
-                        })}
+                        })() : (
+                          <div className="w-full h-full rounded-xl border border-white/5 bg-white/[0.02] flex items-center justify-center pointer-events-none">
+                            <span className="text-[9px] font-mono tracking-widest text-neutral-500 uppercase">Hover chip for telemetry</span>
+                          </div>
+                        )}
                       </div>
-                    </div>
 
                     {/* Decade Timeline Barcode Matrix */}
                     <div className="mt-auto pt-3 border-t border-white/5">
@@ -1174,10 +1204,10 @@ export default function HistoryPage() {
                           <span className="text-[#D4AF37]/80">1900 &mdash; 2020s</span>
                         </div>
 
-                        <div className="grid grid-cols-11 gap-1 items-end h-13 sm:h-14 px-1.5 pt-1.5 pb-1.5 rounded-lg bg-black/50 border border-white/10 shadow-inner">
+                        <div className="grid grid-flow-col auto-cols-fr gap-1 items-end h-13 sm:h-14 px-1.5 pt-1.5 pb-1.5 rounded-lg bg-black/50 border border-white/10 shadow-inner">
                           {decadeBuckets.map((bucket, bIdx) => {
                             const hasWins = bucket.count > 0;
-                            const isMilestone = bIdx === 0 || bIdx === 3 || bIdx === 7 || bIdx === 10;
+                            const isMilestone = bIdx === 0 || bIdx === 5 || bIdx === 9 || bIdx === 12;
                             const hasHighlightedSeasonInBucket = hasFilter
                               ? bucket.seasons.some((s) => matchesSeasonHighlight(s, highlightSeason))
                               : false;
@@ -1207,7 +1237,7 @@ export default function HistoryPage() {
                                       ? hasFilter
                                         ? 'bg-[#D4AF37]/40 opacity-40'
                                         : 'bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.7)] group-hover/decade:bg-[#FCEEAC] group-hover/decade:shadow-[0_0_14px_rgba(252,238,172,0.95)]'
-                                      : 'bg-white/10 group-hover/decade:bg-white/20'
+                                      : 'bg-white/15 group-hover/decade:bg-white/30'
                                   }`}
                                   style={{ height: `${heightPercent}%` }}
                                 />
@@ -1230,13 +1260,13 @@ export default function HistoryPage() {
                                     &bull;
                                   </span>
                                 ) : (
-                                  <span className="text-[10px] font-mono text-white/20 mt-1 select-none transition-colors group-hover/decade:text-neutral-300 leading-tight">
+                                  <span className="text-[10px] font-mono text-neutral-500 font-bold mt-1 select-none transition-colors group-hover/decade:text-neutral-300 leading-tight">
                                     &bull;
                                   </span>
                                 )}
 
                                 {/* Laser Hover Tooltip */}
-                                <div className={`pointer-events-none absolute -top-9 opacity-0 group-hover/decade:opacity-100 group-hover/decade:-translate-y-1 transition-all duration-150 px-2.5 py-1 text-[10px] font-mono font-bold text-[#FCEEAC] bg-neutral-950/98 border border-[#D4AF37]/60 rounded-md shadow-2xl whitespace-nowrap z-50 ${tooltipAlignClass}`}>
+                                <div className={`pointer-events-none absolute -top-10 opacity-0 group-hover/decade:opacity-100 group-hover/decade:-translate-y-1 transition-all duration-150 px-2.5 py-1 text-[10px] font-mono font-bold text-[#FCEEAC] bg-neutral-950/98 border border-[#D4AF37]/60 rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.8)] whitespace-nowrap z-[60] ${tooltipAlignClass}`}>
                                   <span className="text-white">{bucket.fullDecade}:</span>{' '}
                                   {hasWins ? (
                                     <>
@@ -1312,7 +1342,7 @@ export default function HistoryPage() {
                               : 'bg-neutral-500'
                           }`}
                         />
-                        <span className="text-neutral-400 shrink-0">SOLO ERA:</span>
+                        <span className="text-neutral-300 font-medium shrink-0">SOLO ERA:</span>
                         <span
                           className={`font-bold uppercase truncate ${
                             dynasty.safCount === 1
@@ -1338,24 +1368,24 @@ export default function HistoryPage() {
                   ) : (
                     <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[9px] font-mono select-none">
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shrink-0" />
-                        <span className="text-neutral-400">SAF:</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shadow-[0_0_6px_rgba(212,175,55,0.8)] shrink-0" />
+                        <span className="text-neutral-300 font-medium">SAF:</span>
                         <span className="text-[#FCEEAC] font-bold">{dynasty.safCount}</span>
                       </div>
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-                        <span className="text-neutral-400">BUSBY:</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.8)] shrink-0" />
+                        <span className="text-neutral-300 font-medium">BUSBY:</span>
                         <span className="text-cyan-300 font-bold">{dynasty.busbyCount}</span>
                       </div>
                       <div className="flex items-center gap-1 whitespace-nowrap">
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
-                        <span className="text-neutral-400">POST:</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)] shrink-0" />
+                        <span className="text-neutral-300 font-medium">POST:</span>
                         <span className="text-red-300 font-bold">{dynasty.postSafCount}</span>
                       </div>
                       {dynasty.heritageCount > 0 && (
                         <div className="flex items-center gap-1 whitespace-nowrap">
-                          <span className="w-1.5 h-1.5 rounded-full bg-neutral-500 shrink-0" />
-                          <span className="text-neutral-400">HIST:</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 shadow-[0_0_6px_rgba(163,163,163,0.8)] shrink-0" />
+                          <span className="text-neutral-300 font-medium">HIST:</span>
                           <span className="text-neutral-300 font-bold">{dynasty.heritageCount}</span>
                         </div>
                       )}
