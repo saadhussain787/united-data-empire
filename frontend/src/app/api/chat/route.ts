@@ -23,10 +23,22 @@ Talk like a human having a casual conversation about the game. Keep it simple, n
 Avoid dense bullet points or walls of text unless explicitly asked. Give bite-sized, easy-to-read answers.
 If the data is missing, just casually mention that you don't have those exact numbers on hand.`;
 
+    const coreMessages = messages.map((m: any) => ({
+      role: m.role,
+      content: m.content
+    }));
+
     const result = streamText({
-      model: google('gemini-flash-latest'),
+      model: google('gemini-flash-latest', {
+        safetySettings: [
+          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+        ],
+      }),
       system: systemPrompt,
-      messages,
+      messages: coreMessages,
     });
 
     return result.toTextStreamResponse();
