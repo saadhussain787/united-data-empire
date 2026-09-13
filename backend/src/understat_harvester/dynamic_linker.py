@@ -105,17 +105,36 @@ def get_understat_match_id(session, espn_home_team, espn_away_team, match_date_s
         return None
         
     target_date = match_date_str[:10] 
+    from datetime import datetime, timedelta
+    try:
+        target_dt = datetime.strptime(target_date, "%Y-%m-%d")
+    except ValueError:
+        print(f"  ❌ Invalid target date format: {target_date}")
+        return None
+        
+    opponent_espn_name = espn_away_team if is_home else espn_home_team
+    opponent_slug = TEAM_MAPPING.get(opponent_espn_name) or opponent_espn_name
     
     for match in dates_data:
         if not match.get("isResult"):
             continue
             
         understat_date = match.get("datetime", "")[:10]
-        
-        if target_date == understat_date:
-            return match.get("id")
+        try:
+            understat_dt = datetime.strptime(understat_date, "%Y-%m-%d")
+        except ValueError:
+            continue
             
-    print(f"  ❌ No matching fixture found for date {target_date}.")
+        # Tolerance of +/- 1 day for timezone differences
+        if abs((target_dt - understat_dt).days) <= 1:
+            u_opponent_node = match.get("a") if is_home else match.get("h")
+            u_opponent_title = u_opponent_node.get("title", "") if u_opponent_node else ""
+            u_opponent_mapped = TEAM_MAPPING.get(u_opponent_title) or u_opponent_title
+            
+            if opponent_slug == u_opponent_mapped or u_opponent_title.lower() in opponent_espn_name.lower() or opponent_espn_name.lower() in u_opponent_title.lower():
+                return match.get("id")
+            
+    print(f"  ❌ No matching fixture found around date {target_date} against {opponent_espn_name}.")
     return None
 
 def extract_match_data(session, match_id):
@@ -226,7 +245,7 @@ def run_dynamic_linker():
     FROM "Match"
     WHERE "status" = 'FT'
       AND "season" = 2026
-      AND ("shotData" IS NULL OR "shotData"::text = '[]' OR "shotData"::text = '{}')
+      AND ("shotData" IS NULL OR "shotData"::text = '[]' OR "shotData"::text = '{}' OR "teamStats"::text NOT LIKE '%expectedGoals%')
     ORDER BY "date" DESC;
     """
     

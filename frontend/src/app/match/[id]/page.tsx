@@ -11,6 +11,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import TacticalAssistant from "@/components/Chat/TacticalAssistant";
+import { ComparativeStatBar } from "@/components/Match/ComparativeStatBar";
+import AttackingZones from "@/components/Match/AttackingZones";
 
 interface EventItem {
   type: "Goal" | "Card" | "Sub";
@@ -55,61 +58,31 @@ interface MatchRecord {
   cards: { player: string; minute: string; type: string; teamId: string }[] | null;
   teamStats: Record<string, Record<string, string>> | null;
   shotData: ShotItem[] | null;
+  stats?: {
+    playerId: number;
+    player?: { name: string; position: string; number: number };
+    rating: number;
+    minutes: number;
+    goals: number;
+    assists: number;
+    shotsTotal: number;
+    passesTotal: number;
+    passesKey: number;
+    passAccuracy: number;
+    tackles: number;
+    interceptions: number;
+    passesAccurate?: number;
+    longBalls?: number;
+    crosses?: number;
+    clearances?: number;
+    xG?: number;
+    xA?: number;
+    dribbles?: number;
+    blocks?: number;
+  }[];
+  matchContext?: any;
 }
 
-// Reusable Comparative Stat Bar
-const StatBar = ({
-  label,
-  homeVal,
-  awayVal,
-  homeColorClass,
-  awayColorClass,
-  isPercentage = false,
-  reverse = false, // If true, smaller number gets larger bar (e.g., PPDA)
-}: {
-  label: string;
-  homeVal: number | string;
-  awayVal: number | string;
-  homeColorClass: string;
-  awayColorClass: string;
-  isPercentage?: boolean;
-  reverse?: boolean;
-}) => {
-  const numHome = typeof homeVal === "string" ? parseFloat(homeVal) : homeVal;
-  const numAway = typeof awayVal === "string" ? parseFloat(awayVal) : awayVal;
-  const absHome = Math.abs(numHome) || 0;
-  const absAway = Math.abs(numAway) || 0;
-  const total = absHome + absAway || 1;
-  let homePct = (absHome / total) * 100;
-  let awayPct = (absAway / total) * 100;
-
-  if (reverse) {
-    // Invert percentages for metrics like PPDA where lower is better
-    const temp = homePct;
-    homePct = awayPct;
-    awayPct = temp;
-  }
-
-  return (
-    <div className="space-y-1.5">
-      <div className="flex justify-between text-xs font-semibold">
-        <span className="text-gray-300">
-          {homeVal}
-          {isPercentage && "%"}
-        </span>
-        <span className="text-gray-400 uppercase text-[10px] tracking-wider text-center flex-1">{label}</span>
-        <span className="text-gray-300">
-          {awayVal}
-          {isPercentage && "%"}
-        </span>
-      </div>
-      <div className="w-full h-2 bg-black/40 rounded-full flex overflow-hidden border border-white/5">
-        <div className={`${homeColorClass} h-full transition-all duration-700`} style={{ width: `${homePct}%` }} />
-        <div className={`${awayColorClass} h-full transition-all duration-700 flex-1`} />
-      </div>
-    </div>
-  );
-};
 
 export default function MatchDossierPage() {
   const params = useParams();
@@ -118,8 +91,9 @@ export default function MatchDossierPage() {
 
   const [match, setMatch] = useState<MatchRecord | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<"OVERVIEW" | "MATRIX" | "SHOTMAP" | "TIMING">("OVERVIEW");
+  const [activeTab, setActiveTab] = useState<"OVERVIEW" | "MATRIX" | "PLAYERS" | "SHOTMAP" | "TIMING">("OVERVIEW");
   const [selectedShot, setSelectedShot] = useState<ShotItem | null>(null);
+  const [playerTab, setPlayerTab] = useState<"Top Stats" | "Attack" | "Passes" | "Defense" | "Physical">("Top Stats");
 
   useEffect(() => {
     async function fetchMatchData() {
@@ -286,12 +260,13 @@ export default function MatchDossierPage() {
           {[
             { id: "OVERVIEW", label: "Overview & Events", icon: "📌" },
             { id: "MATRIX", label: "Tactical Matrix", icon: "📊" },
+            { id: "PLAYERS", label: "Player Matrix", icon: "👥" },
             { id: "SHOTMAP", label: "2D Shot Map", icon: "🎯" },
             { id: "TIMING", label: "xG Momentum Chart", icon: "📈" },
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as "OVERVIEW" | "MATRIX" | "SHOTMAP" | "TIMING")}
+              onClick={() => setActiveTab(tab.id as "OVERVIEW" | "MATRIX" | "PLAYERS" | "SHOTMAP" | "TIMING")}
               className={`flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl transition-all whitespace-nowrap ${
                 activeTab === tab.id ? "bg-[#DA291C] text-white shadow-lg" : "bg-[#151A22] text-gray-400 hover:text-white border border-white/5"
               }`}
@@ -311,22 +286,55 @@ export default function MatchDossierPage() {
                 {timeline.length === 0 ? (
                   <p className="text-sm text-gray-500 italic">No major events recorded yet.</p>
                 ) : (
-                  <div className="space-y-6 relative before:absolute before:inset-0 before:left-3 before:w-0.5 before:bg-white/10">
-                    {timeline.map((evt, idx) => (
-                      <div key={idx} className="relative flex items-start gap-4 pl-8">
-                        <div className={`absolute left-1.5 top-1 h-3.5 w-3.5 rounded-full border-2 border-[#151A22] ${evt.type === 'Goal' ? 'bg-[#DA291C]' : 'bg-yellow-400'}`} />
-                        <div className="bg-[#0B0E14] border border-white/5 rounded-xl p-4 flex-1">
-                          <div className="flex items-center justify-between text-xs mb-1">
-                            <span className={`font-bold flex items-center gap-1.5 ${evt.type === 'Goal' ? 'text-white' : 'text-yellow-400'}`}>
-                              <span>{evt.type === 'Goal' ? '⚽' : '🟨'}</span> {evt.type} — {evt.team === 'home' ? match.homeTeamName : match.awayTeamName}
-                            </span>
-                            <span className="text-[#D4AF37] font-mono font-bold">{evt.minute}</span>
+                  <div className="grid grid-cols-12 relative gap-y-6 py-4">
+                    {/* Step 2.2: Central dividing line */}
+                    <div className="absolute inset-y-0 left-1/2 w-0.5 bg-white/10 -translate-x-1/2 hidden md:block" />
+                    {timeline.map((evt, idx) => {
+                      const isHome = evt.team === 'home';
+                      const isGoal = evt.type === 'Goal';
+                      
+                      return (
+                        <React.Fragment key={idx}>
+                          {/* Left Side (Home) */}
+                          <div className={`col-span-5 flex ${isHome ? 'justify-end' : 'justify-end invisible'}`}>
+                            {isHome && (
+                              <div className="bg-[#0B0E14] border border-white/5 rounded-xl p-4 text-right w-full sm:w-11/12 transition-transform hover:-translate-y-1 hover:shadow-lg">
+                                <div className="flex items-center justify-end gap-2 text-xs mb-1">
+                                  <span className={`font-bold ${isGoal ? 'text-white' : 'text-yellow-400'}`}>
+                                    {evt.type} — {match.homeTeamName}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-white font-semibold">{evt.player}</p>
+                                {evt.text && <p className="text-xs text-gray-400 mt-1 leading-relaxed">{evt.text}</p>}
+                              </div>
+                            )}
                           </div>
-                          <p className="text-sm text-gray-300 font-medium">{evt.player}</p>
-                          {evt.text && <p className="text-xs text-gray-500 mt-1 leading-relaxed">{evt.text}</p>}
-                        </div>
-                      </div>
-                    ))}
+                          
+                          {/* Center Spine */}
+                          <div className="col-span-2 col-start-6 flex flex-col items-center justify-center relative z-10">
+                            <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full border-4 border-[#151A22] flex items-center justify-center text-xs sm:text-sm shadow-xl ${isGoal ? 'bg-[#DA291C]' : 'bg-[#D4AF37]'}`}>
+                              {isGoal ? '⚽' : '🟨'}
+                            </div>
+                            <span className="mt-1.5 text-[10px] sm:text-xs font-mono font-bold text-[#D4AF37] bg-[#151A22] px-2 py-0.5 rounded-full border border-white/10 shadow-sm">{evt.minute}</span>
+                          </div>
+                          
+                          {/* Right Side (Away) */}
+                          <div className={`col-span-5 col-start-8 flex ${!isHome ? 'justify-start' : 'justify-start invisible'}`}>
+                            {!isHome && (
+                              <div className="bg-[#0B0E14] border border-white/5 rounded-xl p-4 text-left w-full sm:w-11/12 transition-transform hover:-translate-y-1 hover:shadow-lg">
+                                <div className="flex items-center justify-start gap-2 text-xs mb-1">
+                                  <span className={`font-bold ${isGoal ? 'text-white' : 'text-yellow-400'}`}>
+                                    {evt.type} — {match.awayTeamName}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-white font-semibold">{evt.player}</p>
+                                {evt.text && <p className="text-xs text-gray-400 mt-1 leading-relaxed">{evt.text}</p>}
+                              </div>
+                            )}
+                          </div>
+                        </React.Fragment>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -347,11 +355,27 @@ export default function MatchDossierPage() {
                     </div>
                   </div>
                 )}
-                <div className="bg-[#151A22] border border-white/10 rounded-2xl p-6 space-y-4 text-xs text-gray-300">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Venue Intelligence</h4>
-                  <div className="flex justify-between py-2 border-b border-white/5"><span className="text-gray-500">Stadium:</span><span className="text-white font-medium">{match.venue || "TBD"}</span></div>
-                  <div className="flex justify-between py-2 border-b border-white/5"><span className="text-gray-500">Competition:</span><span className="text-white font-medium">{match.competition}</span></div>
-                  <div className="flex justify-between py-2"><span className="text-gray-500">Season:</span><span className="text-white font-medium">2026/2027</span></div>
+                <div className="bg-[#151A22] border border-white/10 rounded-2xl p-6 space-y-5">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37] border-b border-white/10 pb-3">Match Context</h4>
+                  
+
+
+                  {/* Venue & Conditions */}
+                  <div className="space-y-3 pt-2">
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <span>🏟️</span> <span className="text-xs uppercase tracking-wider">Stadium</span>
+                      </div>
+                      <span className="text-sm text-white font-medium text-right">{match.venue || match.matchContext?.infoBox?.Stadium?.text || "TBD"}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <span>🏆</span> <span className="text-xs uppercase tracking-wider">Tournament</span>
+                      </div>
+                      <span className="text-sm text-white font-medium text-right">{match.competition}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -360,26 +384,268 @@ export default function MatchDossierPage() {
           {/* TAB 2: TACTICAL MATRIX */}
           {activeTab === "MATRIX" && (
             <motion.div key="matrix" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }} className="bg-[#151A22] border border-white/10 rounded-2xl p-6 sm:p-10 shadow-2xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
-                <div className="space-y-6">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37] border-b border-white/10 pb-2">Attacking & Expected Goals</h4>
-                  <StatBar label="Expected Goals (xG)" homeVal={homexG.toFixed(2)} awayVal={awayxG.toFixed(2)} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                  <StatBar label="Finishing Variance (Goals vs xG)" homeVal={homeFinishingVariance} awayVal={awayFinishingVariance} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                  <StatBar label="Possession" homeVal={homePoss} awayVal={awayPoss} homeColorClass={homeColorClass} awayColorClass={awayColorClass} isPercentage />
-                  <StatBar label="Total Shots" homeVal={homeShots} awayVal={awayShots} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                  <StatBar label="Shots on Target" homeVal={homeShotsOnTarget} awayVal={awayShotsOnTarget} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                  <StatBar label="Shot Quality (xG per Shot)" homeVal={homeShotQuality.toFixed(2)} awayVal={awayShotQuality.toFixed(2)} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                </div>
-                <div className="space-y-6">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37] border-b border-white/10 pb-2">Pressing & Distribution</h4>
-                  <StatBar label="PPDA (Pressing Intensity)" homeVal={homePPDA.toFixed(2)} awayVal={awayPPDA.toFixed(2)} homeColorClass={homeColorClass} awayColorClass={awayColorClass} reverse />
-                  <StatBar label="Deep Completions (<20y)" homeVal={homeDeep} awayVal={awayDeep} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                  <StatBar label="Total Passes" homeVal={homePasses} awayVal={awayPasses} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                  <StatBar label="Pass Accuracy" homeVal={homePassPct} awayVal={awayPassPct} homeColorClass={homeColorClass} awayColorClass={awayColorClass} isPercentage />
-                  <StatBar label="Corners Won" homeVal={homeCorners} awayVal={awayCorners} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
-                  <StatBar label="Fouls Committed" homeVal={homeFouls} awayVal={awayFouls} homeColorClass={homeColorClass} awayColorClass={awayColorClass} />
+              <div id="tactical-matrix-container" className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
+                {match?.teamStats?.fotmob?.Periods?.All?.stats?.length > 0 ? (
+                  match.teamStats.fotmob.Periods.All.stats.map((category: any, catIdx: number) => (
+                    <div key={catIdx} className="space-y-6">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37] border-b border-white/10 pb-2">
+                        {category.title}
+                      </h4>
+                      {category.stats?.filter((stat: any) => stat.type !== 'title' && stat.stats && (stat.stats[0] !== null || stat.stats[1] !== null)).map((stat: any, statIdx: number) => {
+                        let homeVal = stat.stats?.[0] ?? 0;
+                        let awayVal = stat.stats?.[1] ?? 0;
+                        
+                        if (stat.title?.toLowerCase().includes('distance') && typeof homeVal === 'number' && homeVal > 1000) {
+                          homeVal = (homeVal / 1000).toFixed(1) + " km";
+                          awayVal = (typeof awayVal === 'number' ? (awayVal / 1000).toFixed(1) : awayVal) + " km";
+                        }
+                        
+                        const reverse = stat.title?.toLowerCase().includes('fouls') || 
+                                        stat.title?.toLowerCase().includes('cards') ||
+                                        stat.title?.toLowerCase().includes('ppda');
+
+                        const isPercentage = typeof homeVal === 'string' && homeVal.includes('%');
+                        
+                        return (
+                          <ComparativeStatBar 
+                            key={statIdx} 
+                            label={stat.title} 
+                            homeVal={homeVal} 
+                            awayVal={awayVal} 
+                            homeColorClass={homeColorClass} 
+                            awayColorClass={awayColorClass} 
+                            reverse={reverse}
+                            isPercentage={isPercentage}
+                          />
+                        );
+                      })}
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center py-12 text-gray-500 space-y-3">
+                    <span className="text-4xl">📊</span>
+                    <p className="text-xs uppercase tracking-widest">Tactical statistics currently unavailable.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Attacking Zones Section */}
+              <div className="mt-12 pt-8 border-t border-white/10">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-8 text-center">
+                  Attacking Zones
+                </h4>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-16">
+                  {/* Home Team Zones */}
+                  <AttackingZones 
+                    teamName={match?.homeTeamName || "Home"} 
+                    color="#DA291C" 
+                    zones={{ left: 35, center: 45, right: 20 }} 
+                  />
+                  
+                  {/* Away Team Zones */}
+                  <AttackingZones 
+                    teamName={match?.awayTeamName || "Away"} 
+                    color="#1E40AF" 
+                    zones={{ left: 25, center: 40, right: 35 }} 
+                  />
                 </div>
               </div>
+            </motion.div>
+          )}
+
+          {/* TAB 2.5: PLAYER MATRIX */}
+          {activeTab === "PLAYERS" && (
+            <motion.div key="players" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }} className="bg-[#151A22] border border-white/10 rounded-2xl p-6 shadow-2xl overflow-x-auto">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-white/10 pb-4 mb-4 gap-4">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Individual Player Ratings & Stats</h4>
+                <div className="flex items-center gap-2 bg-[#0B0E14] p-1 rounded-lg border border-white/5">
+                  {["Top Stats", "Attack", "Passes", "Defense", "Physical"].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setPlayerTab(tab as any)}
+                      className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${
+                        playerTab === tab ? "bg-[#DA291C] text-white" : "text-gray-500 hover:text-white"
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {match.stats && match.stats.length > 0 ? (() => {
+                const manUtdId = match.homeTeamName.includes("United") ? match.homeTeamId : match.awayTeamId;
+                const unitedStats = match.stats.filter((s: any) => s.rawStatsJson?.teamId === manUtdId);
+                const maxRating = Math.max(...unitedStats.map((s: any) => s.rating || 0));
+                
+                return (
+                  <table className="w-full text-left text-sm whitespace-nowrap">
+                  <thead>
+                    <tr className="text-gray-500 uppercase tracking-widest text-[10px] border-b border-white/5">
+                      <th className="pb-3 pr-4 font-semibold">Player</th>
+                      <th className="pb-3 px-3 font-semibold text-center">Pos</th>
+                      <th className="pb-3 px-3 font-semibold text-center">Mins</th>
+                      <th className="pb-3 px-3 font-semibold text-center text-[#D4AF37]">Rating</th>
+                      
+                      {playerTab === "Top Stats" && (
+                        <>
+                          <th className="pb-3 px-3 font-semibold text-center">G/A</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Shots</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Passes</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Key</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Pass %</th>
+                          <th className="pb-3 pl-3 font-semibold text-center">Def (T/I)</th>
+                        </>
+                      )}
+                      
+                      {playerTab === "Attack" && (
+                        <>
+                          <th className="pb-3 px-3 font-semibold text-center">Goals</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Assists</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Shots</th>
+                          <th className="pb-3 px-3 font-semibold text-center">xG</th>
+                          <th className="pb-3 pl-3 font-semibold text-center">xA</th>
+                        </>
+                      )}
+
+                      {playerTab === "Passes" && (
+                        <>
+                          <th className="pb-3 px-3 font-semibold text-center">Total</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Accurate</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Key</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Pass %</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Long Balls</th>
+                          <th className="pb-3 pl-3 font-semibold text-center">Crosses</th>
+                        </>
+                      )}
+
+                      {playerTab === "Defense" && (
+                        <>
+                          <th className="pb-3 px-3 font-semibold text-center">Tackles</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Interceptions</th>
+                          <th className="pb-3 px-3 font-semibold text-center">Clearances</th>
+                          <th className="pb-3 pl-3 font-semibold text-center">Blocks</th>
+                        </>
+                      )}
+
+                      {playerTab === "Physical" && (
+                        <>
+                          <th className="pb-3 px-3 font-semibold text-center">Distance (km)</th>
+                          <th className="pb-3 pl-3 font-semibold text-center">Top Speed (km/h)</th>
+                        </>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {[...unitedStats].sort((a, b) => (b.rating || 0) - (a.rating || 0)).map((stat, idx) => {
+                      const isMotM = stat.rating === maxRating && maxRating > 0;
+                      let ratingColor = "text-gray-400";
+                      if (!isMotM) {
+                        if (stat.rating >= 8.0) ratingColor = "text-green-400";
+                        else if (stat.rating >= 7.0) ratingColor = "text-green-500";
+                        else if (stat.rating >= 6.0) ratingColor = "text-yellow-500";
+                        else ratingColor = "text-red-500";
+                      }
+                      return (
+                      <tr key={idx} className={`transition-colors ${isMotM ? 'bg-[#1E40AF]/20 border-l-2 border-[#3B82F6]' : 'hover:bg-white/[0.02]'}`}>
+                        <td className="py-3 pr-4 font-medium text-white flex items-center gap-3">
+                          <span className="text-gray-600 text-xs w-4">{stat.player?.number || '-'}</span>
+                          {(stat.player?.name && stat.player?.name !== "Unknown") ? stat.player.name : ((stat as any).rawStatsJson?.fotmob_player_name || 'Unknown')}
+                        </td>
+                        <td className="py-3 px-3 text-center text-gray-400 text-xs">{(stat.player?.position && stat.player?.position !== "Unknown") ? stat.player.position : ((stat as any).rawStatsJson?.positionStringShort || (stat as any).rawStatsJson?.role || '-')}</td>
+                        <td className="py-3 px-3 text-center text-gray-400">{stat.minutes}'</td>
+                        <td className="py-3 px-3 text-center">
+                          {isMotM ? (
+                            <span className="bg-[#3B82F6] text-white font-black px-2 py-0.5 rounded flex items-center justify-center gap-1 w-fit mx-auto">
+                              {(stat.rating || 0).toFixed(1)} <span className="text-[10px]">⭐</span>
+                            </span>
+                          ) : (
+                            <span className={`font-bold ${ratingColor}`}>{(stat.rating || 0).toFixed(1)}</span>
+                          )}
+                        </td>
+                        
+                        {playerTab === "Top Stats" && (() => {
+                          const raw = (stat as any).rawStatsJson || {};
+                          return (
+                          <>
+                            <td className="py-3 px-3 text-center text-gray-300">{stat.goals} / {stat.assists}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{stat.shotsTotal}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{stat.passesTotal}</td>
+                            <td className="py-3 px-3 text-center text-gray-300 font-semibold">{stat.passesKey}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{Math.round(stat.passAccuracy || 0)}%</td>
+                            <td className="py-3 pl-3 text-center text-gray-400">{stat.tackles} / {stat.interceptions}</td>
+                          </>
+                          );
+                        })()}
+                        
+                        {playerTab === "Attack" && (
+                          <>
+                            <td className="py-3 px-3 text-center text-gray-300">{stat.goals}</td>
+                            <td className="py-3 px-3 text-center text-gray-300">{stat.assists}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{stat.shotsTotal}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{stat.xG !== undefined ? stat.xG.toFixed(2) : '-'}</td>
+                            <td className="py-3 pl-3 text-center text-gray-400">{stat.xA !== undefined ? stat.xA.toFixed(2) : '-'}</td>
+                          </>
+                        )}
+
+                        {playerTab === "Passes" && (() => {
+                          const raw = (stat as any).rawStatsJson || {};
+                          return (
+                          <>
+                            <td className="py-3 px-3 text-center text-gray-400">{stat.passesTotal}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{raw.passesAccurate ?? '-'}</td>
+                            <td className="py-3 px-3 text-center text-gray-300 font-semibold">{stat.passesKey}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{Math.round(stat.passAccuracy || 0)}%</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{raw.longBalls ?? '-'}</td>
+                            <td className="py-3 pl-3 text-center text-gray-400">{raw.crosses ?? '-'}</td>
+                          </>
+                          );
+                        })()}
+
+                        {playerTab === "Defense" && (() => {
+                          const raw = (stat as any).rawStatsJson || {};
+                          return (
+                          <>
+                            <td className="py-3 px-3 text-center text-gray-400">{stat.tackles}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{stat.interceptions}</td>
+                            <td className="py-3 px-3 text-center text-gray-400">{raw.clearances ?? '-'}</td>
+                            <td className="py-3 pl-3 text-center text-gray-400">{stat.blocks ?? '-'}</td>
+                          </>
+                          );
+                        })()}
+
+                        {playerTab === "Physical" && (() => {
+                          const raw = (stat as any).rawStatsJson || {};
+                          let rawDist = raw.totalDistance;
+                          let rawSpeed = raw.topSpeed;
+                          if (raw.detailed_stats && Array.isArray(raw.detailed_stats)) {
+                            const physical = raw.detailed_stats.find((c: any) => c.key === "physical_metrics");
+                            if (physical && physical.stats) {
+                               const dStat = physical.stats["Distance covered"] || physical.stats["Distance Covered"];
+                               if (dStat && dStat.stat && dStat.stat.value !== undefined) rawDist = dStat.stat.value;
+                               const sStat = physical.stats["Top speed"] || physical.stats["Top Speed"];
+                               if (sStat && sStat.stat && sStat.stat.value !== undefined) rawSpeed = sStat.stat.value;
+                            }
+                          }
+                          const dist = typeof rawDist === 'number' ? (rawDist / 1000).toFixed(2) : '-';
+                          const speed = typeof rawSpeed === 'number' ? rawSpeed.toFixed(2) : '-';
+                          return (
+                          <>
+                            <td className="py-3 px-3 text-center text-gray-400">{dist}</td>
+                            <td className="py-3 pl-3 text-center text-gray-400">{speed}</td>
+                          </>
+                          );
+                        })()}
+                      </tr>
+                    )})}
+                  </tbody>
+                </table>
+                );
+              })() : (
+                <div className="flex flex-col items-center justify-center py-12 text-gray-500 space-y-3">
+                  <span className="text-4xl">👥</span>
+                  <p className="text-xs uppercase tracking-widest">Player stats currently unavailable for this match.</p>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -434,7 +700,7 @@ export default function MatchDossierPage() {
             </motion.div>
           )}
 
-          {/* TAB 4: TIMING CHART */}
+          {/* TAB 5: TIMING CHART */}
           {activeTab === "TIMING" && (
             <motion.div key="timing" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }} className="bg-[#151A22] border border-white/10 rounded-2xl p-6 sm:p-10 shadow-2xl">
               <div className="h-80 w-full">
@@ -456,6 +722,8 @@ export default function MatchDossierPage() {
           )}
         </AnimatePresence>
       </main>
+
+      <TacticalAssistant matchContext={match} />
     </div>
   );
 }

@@ -13,6 +13,19 @@ export async function GET() {
       orderBy: {
         date: 'asc',
       },
+      include: {
+        stats: {
+          include: {
+            player: {
+              select: {
+                name: true,
+                position: true,
+                number: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return NextResponse.json({
