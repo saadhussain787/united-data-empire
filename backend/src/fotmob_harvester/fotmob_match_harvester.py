@@ -35,21 +35,20 @@ def get_db_connection():
 
 def fetch_fotmob_data(match_id):
     """
-    Step 1.2 & 1.3: Hit the FotMob API using ScrapingBee to bypass anti-bot blocks.
+    Step 1.2 & 1.3: Hit the FotMob API using ZenRows to bypass anti-bot blocks.
     """
     url = f"https://www.fotmob.com/api/data/matchDetails?matchId={match_id}"
-    scrapingbee_key = os.getenv("SCRAPINGBEE_KEY")
+    zenrows_key = os.getenv("ZENROWS_API_KEY")
     
-    if not scrapingbee_key:
-        print("❌ Error: SCRAPINGBEE_KEY missing from environment.")
+    if not zenrows_key:
+        print("❌ Error: ZENROWS_API_KEY missing from environment.")
         return None
 
-    proxy_url = "https://app.scrapingbee.com/api/v1/"
+    proxy_url = "https://api.zenrows.com/v1/"
     params = {
-        "api_key": os.getenv("SCRAPINGBEE_KEY"),
+        "apikey": os.getenv("ZENROWS_API_KEY"),
         "url": url,
         "premium_proxy": "true",
-        "forward_headers": "true"
     }
     
     headers = {
@@ -57,7 +56,7 @@ def fetch_fotmob_data(match_id):
     }
 
     try:
-        print(f"📡 Fetching data via ScrapingBee from: {url}")
+        print(f"📡 Fetching data via ZenRows from: {url}")
         response = requests.get(proxy_url, params=params, headers=headers, timeout=60)
         
         if response.status_code == 200:

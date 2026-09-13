@@ -5,9 +5,9 @@
         "appointedDate": "2026-05-22",
         "leftDate": null,
         "isCurrent": true,
-        "totalMatches": 5,
-        "ppg": 2.0,
-        "winPercentage": 66.67,
+        "totalMatches": 6,
+        "ppg": 1.67,
+        "winPercentage": 55.67,
         "preferredShape": null,
         "wins": 0,
         "draws": 0,
@@ -196,7 +196,7 @@
         "losses": 0
     },
     {
-        "name": "Sir Alex Ferguson",
+        "name": "Alex Ferguson",
         "photo": "https://img.a.transfermarkt.technology/portrait/small/_1344344740.jpg?lm=4711",
         "appointedDate": "1986-11-06",
         "leftDate": "2013-06-30",
